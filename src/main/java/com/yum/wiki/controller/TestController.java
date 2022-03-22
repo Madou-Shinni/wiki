@@ -1,5 +1,6 @@
 package com.yum.wiki.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,9 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class TestController {
+
+    /**
+     * 优先读取配置项，配置项没有读取:后面的默认值
+     */
+    @Value("${test.hello:Test}")
+    private String testHello;
+
     @GetMapping("/hello")
     public String hello() {
-        return "Hello world!";
+        return "Hello world!" + testHello;
     }
     @PostMapping("/hello/post")
     public String helloPost(@RequestParam String name) {

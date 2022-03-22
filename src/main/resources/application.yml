@@ -3,6 +3,12 @@ server:
 spring:
   profiles:
     active: dev
+
+# 自定义配置
+test:
+  hello: Hello
+
+
 # 日志级别
 #logging:
 #  level:
