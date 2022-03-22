@@ -1,0 +1,2 @@
+# 单springboot应用不会读取bootstrap文件
+# 应用于springcloud体系，动态配置中心
