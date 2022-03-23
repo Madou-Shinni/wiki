@@ -46,22 +46,41 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      Content
+      <pre>{{ebooks}}</pre>
+      <pre>{{ebooks2}}</pre>
     </a-layout-content>
   </a-layout>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {defineComponent, onMounted, reactive, ref,toRef} from 'vue';
 import axios from "axios";
 
 export default defineComponent({
   name: 'Home',
   // vue3新函数，组件初始会执行
   setup() {
-    axios.get("http://localhost:8081/ebook/list?name=spring").then(
-        (response)=>{console.log("发送了请求")}
-    )
+    // ref: 响应式数据(获取和赋值都需要.value)
+    const ebooks = ref();
+    // reactive: 里面一般是放一个对象
+    const ebooks1 = reactive({books:[]});
+    onMounted(()=>{
+      axios.get("http://localhost:8081/ebook/list?name=spring").then(
+          (response)=>{
+            const data = response.data
+            // 我们后端封装的返回数据的数据集是对象.data
+            ebooks.value = data.data;
+            ebooks1.books = data.data;
+          })
+    });
+
+    // 返回数据让页面能够使用
+    return {
+      ebooks,
+      // toRef：需要有一个变量(变量名可以随意取)赋值！可以把一个对象返回成响应式数据
+      // 参数1：对象， 参数2：对象的属性
+      ebooks2:toRef(ebooks1,"books")
+    }
   }
 });
 </script>

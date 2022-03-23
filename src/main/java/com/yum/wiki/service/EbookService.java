@@ -36,7 +36,7 @@ public class EbookService {
         });*/
 
         // 使用自己封装的CopyUtil 列表复制
-        CopyUtil.copyList(ebooks, EbookRes.class);
-        return resList;
+        List<EbookRes> result = CopyUtil.copyList(ebooks, EbookRes.class);
+        return result;
     }
 }
