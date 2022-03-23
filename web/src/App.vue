@@ -2,18 +2,18 @@
   <a-layout>
     <TheHeader />
     <RouterView />
-    <a-layout-footer style="text-align: center">
-      Just Create ©2022 Created by Freedom lovers
-    </a-layout-footer>
+    <TheFooter />
   </a-layout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import TheHeader from '@/components/The-Header.vue';
+import TheFooter from "@/components/The-Footer.vue";
 export default defineComponent({
   name: 'App',
   components: {
+    TheFooter,
     TheHeader,
   },
 });
