@@ -1,4 +1,4 @@
-package com.yum.wiki.TestService;
+package com.yum.wiki.service;
 
 import com.yum.wiki.domain.Test;
 import com.yum.wiki.mapper.TestMapper;

@@ -1,0 +1,23 @@
+# Get请求
+GET http://localhost:8081/ebook/list
+#Accept: application/json
+
+
+
+# 多个测试脚本需要用###隔离
+###
+
+
+
+###
+# POST请求
+POST http://localhost:8081/hello/post
+Content-Type: application/x-www-form-urlencoded
+
+name=text
+
+###
+# PUT请求
+
+
+# Delete请求
