@@ -1,7 +1,8 @@
 package com.yum.wiki.controller;
 
-import com.yum.wiki.domain.Ebook;
+import com.yum.wiki.request.EbookReq;
 import com.yum.wiki.result.CommonResult;
+import com.yum.wiki.result.EbookRes;
 import com.yum.wiki.service.EbookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +25,9 @@ public class EbookController {
 
 
     @GetMapping("/list")
-    public CommonResult list() {
-        List<Ebook> list = ebookService.list();
-        CommonResult<List<Ebook>> result = new CommonResult<>();
+    public CommonResult list(EbookReq req) {
+        List<EbookRes> list = ebookService.list(req);
+        CommonResult<List<EbookRes>> result = new CommonResult<>();
         result.setData(list);
         return result;
     }

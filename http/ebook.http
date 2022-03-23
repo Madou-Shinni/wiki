@@ -1,5 +1,5 @@
 # Get请求
-GET http://localhost:8081/ebook/list
+GET http://localhost:8081/ebook/list?name=spring
 #Accept: application/json
 
 
