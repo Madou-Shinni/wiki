@@ -5,7 +5,7 @@ import com.yum.wiki.domain.EbookExample;
 import com.yum.wiki.mapper.EbookMapper;
 import com.yum.wiki.request.EbookReq;
 import com.yum.wiki.result.EbookRes;
-import org.springframework.beans.BeanUtils;
+import com.yum.wiki.utils.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +28,15 @@ public class EbookService {
         List<Ebook> ebooks = ebookMapper.selectByExample(ebookExample);
         // EbookRes返回对象，减少一些隐私信息传输
         List<EbookRes> resList = new ArrayList<>();
-        ebooks.stream().forEach(item->{
-            EbookRes ebookRes = new EbookRes();
-            BeanUtils.copyProperties(item,ebookRes);
+        /*ebooks.stream().forEach(item->{
+            // BeanUtils.copyProperties(item,ebookRes);
+            // 使用自己封装的CopyUtil 单体复制
+            EbookRes ebookRes = CopyUtil.copy(item, EbookRes.class);
             resList.add(ebookRes);
-        });
+        });*/
+
+        // 使用自己封装的CopyUtil 列表复制
+        CopyUtil.copyList(ebooks, EbookRes.class);
         return resList;
     }
 }
