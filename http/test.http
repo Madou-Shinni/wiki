@@ -14,6 +14,8 @@ GET http://localhost:8081/hello
 %}
 
 ###
+GET http://localhost:8081/test/list
+
 
 # 多个测试脚本需要用###隔离
 ###
