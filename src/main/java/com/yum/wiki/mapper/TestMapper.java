@@ -4,10 +4,18 @@ import com.yum.wiki.domain.Test;
 
 import java.util.List;
 
-/**
- * @author Yum
- * @version 1.0
- */
 public interface TestMapper {
-    public List<Test> list();
+    int deleteByPrimaryKey(Long id);
+
+    int insert(Test record);
+
+    int insertSelective(Test record);
+
+    Test selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(Test record);
+
+    int updateByPrimaryKey(Test record);
+
+    List<Test> list();
 }

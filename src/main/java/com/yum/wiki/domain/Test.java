@@ -1,20 +1,28 @@
 package com.yum.wiki.domain;
 
-/**
- * @author Yum
- * @version 1.0
- */
-public class Test {
-    private Integer id;
+import java.io.Serializable;
+
+public class Test implements Serializable {
+    private Long id;
+
     private String name;
-    private String password;
 
+    private static final long serialVersionUID = 1L;
 
-    public Integer getId() {
+    public Test(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Test() {
+        super();
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -23,14 +31,6 @@ public class Test {
     }
 
     public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        this.name = name == null ? null : name.trim();
     }
 }
