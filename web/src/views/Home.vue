@@ -77,20 +77,6 @@
 import {defineComponent, onMounted, reactive, ref,toRef} from 'vue';
 import axios from "axios";
 
-const listData: Record<string, string>[] = [];
-
-for (let i = 0; i < 23; i++) {
-  listData.push({
-    href: 'https://www.antdv.com/',
-    title: `ant design vue part ${i}`,
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    description:
-        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
-    content:
-        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  });
-}
-
 export default defineComponent({
   name: 'Home',
   // vue3新函数，组件初始会执行
@@ -125,10 +111,6 @@ export default defineComponent({
     // 返回数据让页面能够使用
     return {
       ebooks,
-      // toRef：需要有一个变量(变量名可以随意取)赋值！可以把一个对象返回成响应式数据
-      // 参数1：对象， 参数2：对象的属性
-      ebooks2:toRef(ebooks1,"books"),
-      listData,
       pagination,
       actions,
     }

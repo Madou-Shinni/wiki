@@ -17,7 +17,7 @@
         </template>
         <template v-slot:action="{text,record}">
           <a-space size="small">
-            <a-button type="primary">
+            <a-button type="primary" @click="edit">
               编辑
             </a-button>
             <a-button type="danger">
@@ -28,6 +28,15 @@
       </a-table>
     </a-layout-content>
   </a-layout>
+  <!--对话框-->
+  <a-modal
+      title="知识库表单"
+      v-model:visible="visible"
+      :confirm-loading="confirmLoading"
+      @ok="handleOk"
+  >
+    <p>{{ modalText }}</p>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -87,6 +96,24 @@ export default defineComponent({
       },
     ];
 
+    /*--------- 对话框 ----------*/
+    const modalText = ref<string>('Content of the modal');
+    const visible = ref<boolean>(false);
+    const confirmLoading = ref<boolean>(false);
+
+    const edit = () => {
+      visible.value = true;
+    };
+    const handleOk = () => {
+      modalText.value = 'The modal will be closed after two seconds';
+      confirmLoading.value = true;
+      setTimeout(() => {
+        visible.value = false;
+        confirmLoading.value = false;
+      }, 2000);
+    };
+    /*-------------------------*/
+
     /**
      * 数据查询
      */
@@ -131,7 +158,14 @@ export default defineComponent({
       pagination,
       columns,
       loading,
-      handleTableChange
+      handleTableChange,
+      /*--------- 对话框 ----------*/
+      modalText,
+      visible,
+      confirmLoading,
+      edit,
+      handleOk,
+      /*-------------------------*/
     }
   }
 });
