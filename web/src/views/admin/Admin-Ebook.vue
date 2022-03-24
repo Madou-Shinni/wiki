@@ -15,9 +15,10 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar"/>
         </template>
+        <!--record代表一整行的数据,传递给edit方法-->
         <template v-slot:action="{text,record}">
           <a-space size="small">
-            <a-button type="primary" @click="edit">
+            <a-button type="primary" @click="edit(record)">
               编辑
             </a-button>
             <a-button type="danger">
@@ -35,7 +36,23 @@
       :confirm-loading="confirmLoading"
       @ok="handleOk"
   >
-    <p>{{ modalText }}</p>
+    <a-form :model="ebook" :label-col="{span: 6}">
+      <a-form-item label="封面">
+        <a-input v-model:value="ebook.cover" />
+      </a-form-item>
+      <a-form-item label="名称">
+        <a-input v-model:value="ebook.name" />
+      </a-form-item>
+      <a-form-item label="分类一">
+        <a-input v-model:value="ebook.category1Id" />
+      </a-form-item>
+      <a-form-item label="分类二">
+        <a-input v-model:value="ebook.category2Id" />
+      </a-form-item>
+      <a-form-item label="描述">
+        <a-input v-model:value="ebook.desc" type="text" />
+      </a-form-item>
+    </a-form>
   </a-modal>
 </template>
 
@@ -97,15 +114,18 @@ export default defineComponent({
     ];
 
     /*--------- 对话框 ----------*/
-    const modalText = ref<string>('Content of the modal');
+    const ebook = ref({})
     const visible = ref<boolean>(false);
     const confirmLoading = ref<boolean>(false);
 
-    const edit = () => {
+    /**
+     * 编辑
+     */
+    const edit = (record: any) => {
       visible.value = true;
+      ebook.value = record;
     };
     const handleOk = () => {
-      modalText.value = 'The modal will be closed after two seconds';
       confirmLoading.value = true;
       setTimeout(() => {
         visible.value = false;
@@ -160,7 +180,7 @@ export default defineComponent({
       loading,
       handleTableChange,
       /*--------- 对话框 ----------*/
-      modalText,
+      ebook,
       visible,
       confirmLoading,
       edit,
