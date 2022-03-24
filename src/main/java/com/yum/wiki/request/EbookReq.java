@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 请求参数类
  */
-public class EbookReq implements Serializable {
+public class EbookReq extends PageReq implements Serializable {
     private Long id;
 
     private String name;
