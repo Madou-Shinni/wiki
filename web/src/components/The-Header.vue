@@ -10,7 +10,7 @@
         <router-link to="/">首页</router-link>
       </a-menu-item>
       <a-menu-item key="2">
-        <router-link to="/admin/ebook">知识库</router-link>
+        <router-link to="/admin/ebook">知识库管理</router-link>
       </a-menu-item>
       <a-menu-item key="3">
         <router-link to="/about">关于我们</router-link>
