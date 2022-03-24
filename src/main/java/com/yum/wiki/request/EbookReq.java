@@ -1,25 +1,12 @@
 package com.yum.wiki.request;
 
-import java.io.Serializable;
-
 /**
  * 请求参数类
  */
-public class EbookReq extends PageReq implements Serializable {
+public class EbookReq extends PageReq {
     private Long id;
 
     private String name;
-
-    private static final long serialVersionUID = 1L;
-
-    public EbookReq(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public EbookReq() {
-        super();
-    }
 
     public Long getId() {
         return id;

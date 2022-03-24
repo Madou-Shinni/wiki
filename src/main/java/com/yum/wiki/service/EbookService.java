@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,13 +37,11 @@ public class EbookService {
         }
         // 分页(只对后面执行的第一条SQL有效)
         PageHelper.startPage(req.getPage(), req.getSize());
-        List<Ebook> ebooks = ebookMapper.selectByExample(ebookExample);
+        List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
         // pagehelper还提供page对象
-        PageInfo<Ebook> pageInfo = new PageInfo<>(ebooks);
+        PageInfo<Ebook> pageInfo = new PageInfo<>(ebookList);
         //pageInfo.getTotal();
         //pageInfo.getPages();
-        // EbookRes返回对象，减少一些隐私信息传输
-        List<EbookRes> resList = new ArrayList<>();
         /*ebooks.stream().forEach(item->{
             // BeanUtils.copyProperties(item,ebookRes);
             // 使用自己封装的CopyUtil 单体复制
@@ -52,7 +49,7 @@ public class EbookService {
             resList.add(ebookRes);
         });*/
         // 使用自己封装的CopyUtil 列表复制
-        List<EbookRes> result = CopyUtil.copyList(ebooks, EbookRes.class);
+        List<EbookRes> result = CopyUtil.copyList(ebookList, EbookRes.class);
         PageRes<EbookRes> pageRes = new PageRes<>();
         pageRes.setTotal(pageInfo.getTotal());
         pageRes.setList(result);
