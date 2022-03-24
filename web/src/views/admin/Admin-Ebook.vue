@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted,ref} from 'vue';
+import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 
 
@@ -44,7 +44,7 @@ export default defineComponent({
     // 分页
     const pagination = ref({
       current: 1,
-      pageSize: 2,
+      pageSize: 10,
       total: 0
     });
     const loading = ref(false);
@@ -90,15 +90,18 @@ export default defineComponent({
     /**
      * 数据查询
      */
-    const handleQuery = (params: any)=>{
+    const handleQuery = (params: any) => {
       loading.value = true;
-      axios.get("/ebook/list",params).then((response)=>{
+      // 参数二必须用{params:{}} 或者 {params}简化写法
+      axios.get("/ebook/list", {params}).then((response) => {
+        console.log(params)
         loading.value = false
         const data = response.data
         // 我们后端封装的返回数据的数据集是对象.data
-        ebooks.value = data.data;
+        ebooks.value = data.data.list;
         // 重置分页按钮
         pagination.value.current = params.page;
+        pagination.value.total = data.data.total;
       })
     };
 
@@ -115,8 +118,11 @@ export default defineComponent({
     /**
      * 初始的时候也查询一次
      */
-    onMounted(()=>{
-      handleQuery({});
+    onMounted(() => {
+      handleQuery({
+        page: 1,
+        size: pagination.value.pageSize
+      });
     });
 
     // 返回数据让页面能够使用
