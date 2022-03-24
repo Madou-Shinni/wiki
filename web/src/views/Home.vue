@@ -46,8 +46,29 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <pre>{{ebooks}}</pre>
-      <pre>{{ebooks2}}</pre>
+      <!--列表-->
+      <!--:grid="{gutter:20,column: 3}" 一行三列每一列间距20px-->
+      <a-list item-layout="vertical" size="large" :grid="{gutter:20,column: 3}" :data-source="ebooks">
+        <template #renderItem="{ item }">
+          <a-list-item key="item.name">
+            <template #actions>
+          <span v-for="{ type, text } in actions" :key="type">
+            <component v-bind:is="type" style="margin-right: 8px" />
+            {{ text }}
+          </span>
+            </template>
+            <a-list-item-meta :description="item.description">
+              <!--标题-->
+              <template #title>
+                <a :href="item.href">{{ item.name }}</a>
+              </template>
+              <!--封面-->
+              <template #avatar><a-avatar :src="item.cover" /></template>
+            </a-list-item-meta>
+            {{ item.content }}
+          </a-list-item>
+        </template>
+      </a-list>
     </a-layout-content>
   </a-layout>
 </template>
@@ -55,6 +76,20 @@
 <script lang="ts">
 import {defineComponent, onMounted, reactive, ref,toRef} from 'vue';
 import axios from "axios";
+
+const listData: Record<string, string>[] = [];
+
+for (let i = 0; i < 23; i++) {
+  listData.push({
+    href: 'https://www.antdv.com/',
+    title: `ant design vue part ${i}`,
+    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+    description:
+        'Ant Design, a design language for background applications, is refined by Ant UED Team.',
+    content:
+        'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+  });
+}
 
 export default defineComponent({
   name: 'Home',
@@ -74,12 +109,28 @@ export default defineComponent({
           })
     });
 
+    // 列表数据分页
+    const pagination = {
+      onChange: (page: number) => {
+        console.log(page);
+      },
+      pageSize: 3,
+    };
+    const actions: Record<string, string>[] = [
+      { type: 'StarOutlined', text: '156' },
+      { type: 'LikeOutlined', text: '156' },
+      { type: 'MessageOutlined', text: '2' },
+    ];
+
     // 返回数据让页面能够使用
     return {
       ebooks,
       // toRef：需要有一个变量(变量名可以随意取)赋值！可以把一个对象返回成响应式数据
       // 参数1：对象， 参数2：对象的属性
-      ebooks2:toRef(ebooks1,"books")
+      ebooks2:toRef(ebooks1,"books"),
+      listData,
+      pagination,
+      actions,
     }
   }
 });
