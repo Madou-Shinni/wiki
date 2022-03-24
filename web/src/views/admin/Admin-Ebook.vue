@@ -127,10 +127,18 @@ export default defineComponent({
     };
     const handleOk = () => {
       confirmLoading.value = true;
-      setTimeout(() => {
-        visible.value = false;
-        confirmLoading.value = false;
-      }, 2000);
+      axios.post("/ebook/update", ebook.value).then((response) => {
+        const data = response.data;
+        if (data.success) {// 保存成功对话框消失，loading效果消失
+          visible.value = false;
+          confirmLoading.value = false;
+          // 重新加载列表数据
+          handleQuery({// 加载当前页
+            page: pagination.value.current,
+            size: pagination.value.pageSize
+          })
+        }
+      })
     };
     /*-------------------------*/
 

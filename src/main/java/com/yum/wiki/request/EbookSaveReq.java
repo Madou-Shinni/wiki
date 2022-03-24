@@ -1,8 +1,8 @@
-package com.yum.wiki.result;
+package com.yum.wiki.request;
 
 import java.io.Serializable;
 
-public class EbookRes implements Serializable {
+public class EbookSaveReq implements Serializable {
     private Long id;
 
     private String name;
@@ -23,7 +23,7 @@ public class EbookRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public EbookRes(Long id, String name, Long category1Id, Long category2Id, String description, String cover, Integer docCount, Integer viewCount, Integer voteCount) {
+    public EbookSaveReq(Long id, String name, Long category1Id, Long category2Id, String description, String cover, Integer docCount, Integer viewCount, Integer voteCount) {
         this.id = id;
         this.name = name;
         this.category1Id = category1Id;
@@ -35,7 +35,7 @@ public class EbookRes implements Serializable {
         this.voteCount = voteCount;
     }
 
-    public EbookRes() {
+    public EbookSaveReq() {
         super();
     }
 

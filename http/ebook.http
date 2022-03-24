@@ -11,10 +11,12 @@ Accept: application/json
 
 ###
 # POST请求
-POST http://localhost:8081/hello/post
-Content-Type: application/x-www-form-urlencoded
+POST http://localhost:8081/ebook/save
+Content-Type: application/json
 
-name=text
+{
+
+}
 
 ###
 # PUT请求
