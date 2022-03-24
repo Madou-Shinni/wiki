@@ -11,6 +11,7 @@ import com.yum.wiki.request.EbookUpdateReq;
 import com.yum.wiki.result.EbookQueryRes;
 import com.yum.wiki.result.PageRes;
 import com.yum.wiki.utils.CopyUtil;
+import com.yum.wiki.utils.SnowFlakeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class EbookService {
 
     @Autowired
     private EbookMapper ebookMapper;
+    @Autowired
+    private SnowFlakeUtil snowFlakeUtil;
 
     public PageRes<EbookQueryRes> list(EbookQueryReq req) {
         EbookExample ebookExample = new EbookExample();
@@ -71,6 +74,7 @@ public class EbookService {
      */
     public void save(EbookSaveReq req) {
         Ebook ebook = CopyUtil.copy(req,Ebook.class);
+        ebook.setId(snowFlakeUtil.nextId());
         ebookMapper.insert(ebook);
     }
 }

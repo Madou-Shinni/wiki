@@ -42,7 +42,7 @@ public class EbookController {
      * @param req
      * @return
      */
-    @PostMapping("/update")
+    @PutMapping("/update")
     public CommonResult update(@RequestBody EbookUpdateReq req) {
         ebookService.update(req);
         CommonResult result = new CommonResult<>();
@@ -54,7 +54,7 @@ public class EbookController {
      * @param req
      * @return
      */
-    @PutMapping("/save")
+    @PostMapping("/save")
     public CommonResult save(@RequestBody EbookSaveReq req) {
         ebookService.save(req);
         CommonResult result = new CommonResult<>();

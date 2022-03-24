@@ -4,6 +4,9 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
+      <a-button type="primary" @click="add()" size="large">
+        新增
+      </a-button>
       <a-table
           :columns="columns"
           :row-key="record => record.id"
@@ -35,6 +38,7 @@
       v-model:visible="visible"
       :confirm-loading="confirmLoading"
       @ok="handleOk"
+      :isAdd="isAdd"
   >
     <a-form :model="ebook" :label-col="{span: 6}">
       <a-form-item label="封面">
@@ -117,7 +121,7 @@ export default defineComponent({
     const ebook = ref({})
     const visible = ref<boolean>(false);
     const confirmLoading = ref<boolean>(false);
-
+    const isAdd = ref<boolean>(false);
     /**
      * 编辑
      */
@@ -125,20 +129,47 @@ export default defineComponent({
       visible.value = true;
       ebook.value = record;
     };
+    /**
+     * 新增
+     */
+    const add = () => {
+      visible.value = true;
+      ebook.value = {};
+      isAdd.value = true;
+    };
     const handleOk = () => {
       confirmLoading.value = true;
-      axios.post("/ebook/update", ebook.value).then((response) => {
-        const data = response.data;
-        if (data.success) {// 保存成功对话框消失，loading效果消失
-          visible.value = false;
-          confirmLoading.value = false;
-          // 重新加载列表数据
-          handleQuery({// 加载当前页
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          })
-        }
-      })
+      // 判断是否新增
+      if(isAdd.value) {
+        // 新增
+        axios.post("/ebook/save", ebook.value).then((response) => {
+          const data = response.data;
+          if (data.success) {// 保存成功对话框消失，loading效果消失
+            visible.value = false;
+            confirmLoading.value = false;
+            isAdd.value = false;
+            // 重新加载列表数据
+            handleQuery({// 加载当前页
+              page: pagination.value.current,
+              size: pagination.value.pageSize
+            })
+          }
+        })
+      }else {
+        // 修改
+        axios.put("/ebook/update", ebook.value).then((response) => {
+          const data = response.data;
+          if (data.success) {// 保存成功对话框消失，loading效果消失
+            visible.value = false;
+            confirmLoading.value = false;
+            // 重新加载列表数据
+            handleQuery({// 加载当前页
+              page: pagination.value.current,
+              size: pagination.value.pageSize
+            })
+          }
+        })
+      }
     };
     /*-------------------------*/
 
@@ -191,7 +222,11 @@ export default defineComponent({
       ebook,
       visible,
       confirmLoading,
+      isAdd,
+
       edit,
+      add,
+
       handleOk,
       /*-------------------------*/
     }
