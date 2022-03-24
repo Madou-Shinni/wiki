@@ -8,6 +8,7 @@ import com.yum.wiki.result.EbookRes;
 import com.yum.wiki.utils.CopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,10 @@ public class EbookService {
     public List<EbookRes> list(EbookReq req) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
-        criteria.andNameLike("%" + req.getName() + "%");
+        // 如果有name（标题）参数传递进来就模糊查询
+        if(!ObjectUtils.isEmpty(req.getName())) {
+            criteria.andNameLike("%" + req.getName() + "%");
+        }
         List<Ebook> ebooks = ebookMapper.selectByExample(ebookExample);
         // EbookRes返回对象，减少一些隐私信息传输
         List<EbookRes> resList = new ArrayList<>();

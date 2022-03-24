@@ -100,7 +100,7 @@ export default defineComponent({
     // reactive: 里面一般是放一个对象
     const ebooks1 = reactive({books:[]});
     onMounted(()=>{
-      axios.get("http://localhost:8081/ebook/list?name=spring").then(
+      axios.get("http://localhost:8081/ebook/list").then(
           (response)=>{
             const data = response.data
             // 我们后端封装的返回数据的数据集是对象.data
@@ -135,3 +135,13 @@ export default defineComponent({
   }
 });
 </script>
+
+<style scoped>
+.ant-avatar {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 8%;
+  margin: 5px 0;
+}
+</style>
