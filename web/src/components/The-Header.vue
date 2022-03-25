@@ -13,6 +13,9 @@
         <router-link to="/admin/ebook">知识库管理</router-link>
       </a-menu-item>
       <a-menu-item key="3">
+        <router-link to="/admin/category">分类管理</router-link>
+      </a-menu-item>
+      <a-menu-item key="4">
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>
     </a-menu>
