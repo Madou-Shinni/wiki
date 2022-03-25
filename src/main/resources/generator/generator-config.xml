@@ -148,8 +148,7 @@
                enableSelectByExample="false"
                selectByExampleQueryId="false" />-->
         <!--电子书表-->
-        <table tableName="ebook" />
-        <!-- <table tableName="course_info" domainObjectName="CourseInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
-        <table tableName="course_user_info" domainObjectName="CourseUserInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" /> -->
+        <!--<table tableName="ebook" />-->
+        <table tableName="category" />
     </context>
 </generatorConfiguration>
