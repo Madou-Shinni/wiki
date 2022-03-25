@@ -246,7 +246,6 @@ export default defineComponent({
      * 初始的时候也查询一次
      */
     onMounted(() => {
-      console.log("发送请求")
       handleQuery();
     });
 

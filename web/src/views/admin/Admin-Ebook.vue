@@ -31,8 +31,7 @@
           <img v-if="cover" :src="cover" alt="avatar"/>
         </template>
         <template v-slot:category="{text, record}">
-          {{text}}
-          <span>{{ getCategoryName(record.category1Id) }}/{{ getCategoryName(record.category2Id) }}</span>
+          <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
         </template>
         <!--record代表一整行的数据,传递给edit方法-->
         <template v-slot:action="{text,record}">
@@ -116,7 +115,8 @@ export default defineComponent({
       },
       {
         title: '分类',
-        dataIndex: 'category',
+        // 渲染
+        slots: {customRender: 'category'}
       },
       {
         title: '文档数',
@@ -319,12 +319,16 @@ export default defineComponent({
         if(item.id === cid) {
           result = item.name;
         }else {
-          result = getCategoryName(item.id);
+          item.children.forEach((item: any)=>{
+            if(item.id === cid) {
+              result = item.name;
+            }
+          })
         }
       });
-      console.log("分类名称："+result);
       return result;
     }
+
     /**
      * 根据分类二的id查询二级分类的名称
      */
