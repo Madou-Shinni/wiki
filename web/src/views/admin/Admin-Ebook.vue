@@ -70,6 +70,7 @@
 <script lang="ts">
 import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
+import {message} from "ant-design-vue";
 
 
 export default defineComponent({
@@ -81,7 +82,7 @@ export default defineComponent({
     // 分页
     const pagination = ref({
       current: 1,
-      pageSize: 10,
+      pageSize: 1001,
       total: 0
     });
     const loading = ref(false);
@@ -207,11 +208,33 @@ export default defineComponent({
         console.log(params)
         loading.value = false
         const data = response.data
-        // 我们后端封装的返回数据的数据集是对象.data
-        ebooks.value = data.data.list;
-        // 重置分页按钮
-        pagination.value.current = params.page;
-        pagination.value.total = data.data.total;
+        if(data.success) {
+          /**
+           * 后端返回统一格式
+           * {
+           *   success: ,
+           *   message: ,
+           *   data:{
+           *
+           *   }
+           * }
+           *
+           * 业务上的成功或失败
+           * private boolean success = true;
+           *
+           * 返回信息
+           * private String message;
+           *
+           * 返回泛型数据，自定义类型
+           * private T data;
+           */
+          ebooks.value = data.data.list;
+          // 重置分页按钮
+          pagination.value.current = params.page;
+          pagination.value.total = data.data.total;
+        }else {
+          message.error(data.message);
+        }
       })
     };
 

@@ -1,5 +1,5 @@
 # Get请求
-GET http://localhost:8081/ebook/list?page=1&size=10
+GET http://localhost:8081/ebook/list?page=1&size=1001
 Accept: application/json
 
 

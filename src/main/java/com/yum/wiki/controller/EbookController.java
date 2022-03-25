@@ -8,6 +8,7 @@ import com.yum.wiki.result.EbookQueryRes;
 import com.yum.wiki.result.PageRes;
 import com.yum.wiki.service.EbookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -24,12 +25,15 @@ public class EbookController {
 
 
     /**
+     * @Validated 校验规则
+     * 对EbookQueryReq参数做校验
+     *
      * 查询知识库列表
      * @param req
      * @return
      */
     @GetMapping("/list")
-    public CommonResult list(EbookQueryReq req) {
+    public CommonResult list(@Validated EbookQueryReq req) {
         PageRes<EbookQueryRes> list = ebookService.list(req);
         CommonResult<PageRes<EbookQueryRes>> result = new CommonResult<>();
         result.setData(list);
