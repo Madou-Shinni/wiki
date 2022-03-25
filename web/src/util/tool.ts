@@ -4,9 +4,9 @@ export class Tool {
      */
     public static isEmpty (obj: any) {
         if((typeof obj === 'string')) {
-            return !obj || obj.replace(/\s+/g,"") === ""
+            return !obj || obj.replace(/\s+/g,"") === "";
         }else {
-            return (!obj || JSON.stringify(obj) === "{}" || obj.length === 0)
+            return (!obj || JSON.stringify(obj) === "{}" || obj.length === 0);
         }
     }
 
@@ -20,7 +20,7 @@ export class Tool {
     /**
      * 对象复制
      */
-    public static copy(obj: object) {
+    public static copy(obj: unknown) {
         if(Tool.isNotEmpty(obj)) {
             return JSON.parse(JSON.stringify(obj));
         }
