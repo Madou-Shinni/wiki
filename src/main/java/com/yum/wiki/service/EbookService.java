@@ -7,6 +7,7 @@ import com.yum.wiki.domain.EbookExample;
 import com.yum.wiki.mapper.EbookMapper;
 import com.yum.wiki.request.EbookQueryReq;
 import com.yum.wiki.request.EbookSaveReq;
+import com.yum.wiki.request.EbookSearchReq;
 import com.yum.wiki.request.EbookUpdateReq;
 import com.yum.wiki.result.EbookQueryRes;
 import com.yum.wiki.result.PageRes;
@@ -84,5 +85,34 @@ public class EbookService {
      */
     public void delete(Long id) {
         ebookMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * 根据标题、描述搜索知识库
+     * @param req
+     * @return
+     */
+    public PageRes<EbookQueryRes> search(EbookSearchReq req) {
+        EbookExample ebookExample = new EbookExample();
+        EbookExample.Criteria criteria = ebookExample.createCriteria();
+        PageHelper.startPage(req.getPage(), req.getSize());
+        List<Ebook> ebookList;
+        // pagehelper分页对象
+        PageInfo<Ebook> pageInfo = new PageInfo<>();
+        // 如果没有传入值
+        if(ObjectUtils.isEmpty(req.getText())) {
+            ebookList = ebookMapper.selectByExample(null);
+        }else {// 如果传入值
+            // 如果有值就根据标题和描述搜索
+            ebookList = ebookMapper.selectAllLikeNameOrDescription(req);
+        }
+        // 封装ebookList分页
+        pageInfo.setList(ebookList);
+        // 封装返回数据集
+        List<EbookQueryRes> result = CopyUtil.copyList(ebookList, EbookQueryRes.class);
+        PageRes<EbookQueryRes> pageRes = new PageRes<>();
+        pageRes.setTotal(pageInfo.getTotal());
+        pageRes.setList(result);
+        return pageRes;
     }
 }

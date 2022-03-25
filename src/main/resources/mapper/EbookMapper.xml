@@ -73,7 +73,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, category1_id, category2_id, description, cover, doc_count, view_count, 
+    id, name, category1_id, category2_id, description, cover, doc_count, view_count,
     vote_count
   </sql>
   <select id="selectByExample" parameterType="com.yum.wiki.domain.EbookExample" resultMap="BaseResultMap">
@@ -91,7 +91,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from ebook
     where id = #{id,jdbcType=BIGINT}
@@ -107,12 +107,12 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.yum.wiki.domain.Ebook">
-    insert into ebook (id, name, category1_id, 
-      category2_id, description, cover, 
+    insert into ebook (id, name, category1_id,
+      category2_id, description, cover,
       doc_count, view_count, vote_count
       )
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{category1Id,jdbcType=BIGINT}, 
-      #{category2Id,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{category1Id,jdbcType=BIGINT},
+      #{category2Id,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR},
       #{docCount,jdbcType=INTEGER}, #{viewCount,jdbcType=INTEGER}, #{voteCount,jdbcType=INTEGER}
       )
   </insert>
@@ -275,4 +275,13 @@
       vote_count = #{voteCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <!--根据标题和描述搜索-->
+  <select id="selectAllLikeNameOrDescription" resultMap="BaseResultMap">
+    SELECT
+      id, name, category1_id, category2_id, description, cover, doc_count, view_count,
+      vote_count
+    FROM `ebook`
+    where `name` LIKE concat('%',#{text},'%') OR description LIKE concat('%',#{text},'%')
+  </select>
 </mapper>

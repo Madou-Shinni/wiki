@@ -4,9 +4,21 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <a-button type="primary" @click="add()" size="large">
-        新增
-      </a-button>
+      <a-form layout="inline" :model="searchText">
+        <a-form-item>
+          <a-input-search
+              v-model:value="searchText.text"
+              placeholder="搜索"
+              style="width: 200px"
+              @search="onSearch({page:1,size:pagination.pageSize})"
+          />
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" @click="add()" size="large">
+            新增
+          </a-button>
+        </a-form-item>
+      </a-form>
       <a-table
           :columns="columns"
           :row-key="record => record.id"
@@ -49,19 +61,19 @@
   >
     <a-form :model="ebook" :label-col="{span: 6}">
       <a-form-item label="封面">
-        <a-input v-model:value="ebook.cover" />
+        <a-input v-model:value="ebook.cover"/>
       </a-form-item>
       <a-form-item label="名称">
-        <a-input v-model:value="ebook.name" />
+        <a-input v-model:value="ebook.name"/>
       </a-form-item>
       <a-form-item label="分类一">
-        <a-input v-model:value="ebook.category1Id" />
+        <a-input v-model:value="ebook.category1Id"/>
       </a-form-item>
       <a-form-item label="分类二">
-        <a-input v-model:value="ebook.category2Id" />
+        <a-input v-model:value="ebook.category2Id"/>
       </a-form-item>
       <a-form-item label="描述">
-        <a-input v-model:value="ebook.description" type="text" />
+        <a-input v-model:value="ebook.description" type="text"/>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -82,7 +94,7 @@ export default defineComponent({
     // 分页
     const pagination = ref({
       current: 1,
-      pageSize: 1001,
+      pageSize: 10,
       total: 0
     });
     const loading = ref(false);
@@ -148,7 +160,7 @@ export default defineComponent({
     /**
      * 删除
      */
-    const  handleDelete = (id:number)=>{
+    const handleDelete = (id: number) => {
       axios.delete(`/ebook/${id}`).then((response) => {
         const data = response.data;
         console.log(`${id}`)
@@ -161,11 +173,35 @@ export default defineComponent({
         }
       })
     }
+    /**
+     * 搜索
+     */
+    const searchText = ref();
+    searchText.value = {};
+    const onSearch = (searchValue: any) => {
+      axios.get("/ebook/search", {
+        params:{
+          page: searchValue.page,
+          size: searchValue.size,
+          text: searchText.value.text
+        }
+      }).then((response) => {
+        const data = response.data
+        if (data.success) {
+          ebooks.value = data.data.list;
+          // 重置分页按钮
+          pagination.value.current = searchValue.page;
+          pagination.value.total = data.data.total;
+        } else {
+          message.error(data.message);
+        }
+      })
+    };
 
     const handleOk = () => {
       confirmLoading.value = true;
       // 判断是否新增
-      if(isAdd.value) {
+      if (isAdd.value) {
         // 新增
         axios.post("/ebook/save", ebook.value).then((response) => {
           const data = response.data;
@@ -180,7 +216,7 @@ export default defineComponent({
             })
           }
         })
-      }else {
+      } else {
         // 修改
         axios.put("/ebook/update", ebook.value).then((response) => {
           const data = response.data;
@@ -205,10 +241,9 @@ export default defineComponent({
       loading.value = true;
       // 参数二必须用{params:{}} 或者 {params}简化写法
       axios.get("/ebook/list", {params}).then((response) => {
-        console.log(params)
         loading.value = false
         const data = response.data
-        if(data.success) {
+        if (data.success) {
           /**
            * 后端返回统一格式
            * {
@@ -232,7 +267,7 @@ export default defineComponent({
           // 重置分页按钮
           pagination.value.current = params.page;
           pagination.value.total = data.data.total;
-        }else {
+        } else {
           message.error(data.message);
         }
       })
@@ -276,6 +311,10 @@ export default defineComponent({
       handleDelete,
 
       handleOk,
+      /*-------------------------*/
+      /*----------- 搜索 --------*/
+      searchText,
+      onSearch
       /*-------------------------*/
     }
   }

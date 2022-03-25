@@ -2,6 +2,7 @@ package com.yum.wiki.controller;
 
 import com.yum.wiki.request.EbookQueryReq;
 import com.yum.wiki.request.EbookSaveReq;
+import com.yum.wiki.request.EbookSearchReq;
 import com.yum.wiki.request.EbookUpdateReq;
 import com.yum.wiki.result.CommonResult;
 import com.yum.wiki.result.EbookQueryRes;
@@ -74,6 +75,19 @@ public class EbookController {
     public CommonResult delete(@PathVariable Long id) {
         ebookService.delete(id);
         CommonResult result = new CommonResult<>();
+        return result;
+    }
+
+    /**
+     * 根据标题、描述搜索知识库
+     * @param req
+     * @return
+     */
+    @GetMapping("/search")
+    public CommonResult search(EbookSearchReq req) {
+        PageRes<EbookQueryRes> list = ebookService.search(req);
+        CommonResult<PageRes<EbookQueryRes>> result = new CommonResult<>();
+        result.setData(list);
         return result;
     }
 }
