@@ -43,7 +43,8 @@ public class CategoryService {
      */
     public List<CategoryQueryResTree> all() {
         CategoryExample categoryExample = new CategoryExample();
-        CategoryExample.Criteria criteria = categoryExample.createCriteria();
+        // 按照sort字段升序
+        categoryExample.setOrderByClause("sort asc");
         List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
         // 封装树型返回结果
         List<CategoryQueryResTree> result = CopyUtil.copyList(categoryList, CategoryQueryResTree.class);

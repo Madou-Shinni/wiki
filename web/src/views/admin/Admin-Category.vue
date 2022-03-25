@@ -64,6 +64,17 @@
       </a-form-item>
       <a-form-item label="父分类">
         <a-input v-model:value="category.parent"/>
+        <!--下拉框-->
+        <a-select
+            ref="select"
+            v-model:value="category.parent"
+        >
+          <a-select-option value="0">无</a-select-option>
+          <a-select-option :value="c.id" v-for="c in categorys" :key="c.id"
+          :disabled="category.id === c.id"> <!--不能选择自己为上级分类-->
+            {{c.name}}
+          </a-select-option>
+        </a-select>
       </a-form-item>
       <a-form-item label="顺序">
         <a-input v-model:value="category.sort"/>
