@@ -63,7 +63,7 @@
         <a-input v-model:value="category.name"/>
       </a-form-item>
       <a-form-item label="父分类">
-        <a-input v-model:value="category.parent"/>
+        <!--<a-input v-model:value="category.parent"/>-->
         <!--下拉框-->
         <a-select
             ref="select"

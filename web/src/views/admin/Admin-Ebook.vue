@@ -30,6 +30,10 @@
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar"/>
         </template>
+        <template v-slot:category="{text, record}">
+          {{text}}
+          <span>{{ getCategoryName(record.category1Id) }}/{{ getCategoryName(record.category2Id) }}</span>
+        </template>
         <!--record代表一整行的数据,传递给edit方法-->
         <template v-slot:action="{text,record}">
           <a-space size="small">
@@ -66,11 +70,10 @@
       <a-form-item label="名称">
         <a-input v-model:value="ebook.name"/>
       </a-form-item>
-      <a-form-item label="分类一">
-        <a-input v-model:value="ebook.category1Id"/>
-      </a-form-item>
-      <a-form-item label="分类二">
-        <a-input v-model:value="ebook.category2Id"/>
+      <a-form-item label="分类">
+        <a-cascader v-model:value="categoryIds"
+                    :field-names="{ label: 'name', value: 'id', children: 'children'}"
+                    :options="level1"/>
       </a-form-item>
       <a-form-item label="描述">
         <a-input v-model:value="ebook.description" type="text"/>
@@ -112,12 +115,8 @@ export default defineComponent({
         dataIndex: 'name',
       },
       {
-        title: '分类一',
-        dataIndex: 'category1Id',
-      },
-      {
-        title: '分类二',
-        dataIndex: 'category2Id',
+        title: '分类',
+        dataIndex: 'category',
       },
       {
         title: '文档数',
@@ -139,7 +138,11 @@ export default defineComponent({
     ];
 
     /*--------- 对话框 ----------*/
-    const ebook = ref({})
+    /**
+     * 数组 [100,101] 对应：前端开发/vue
+     */
+    const categoryIds = ref();
+    const ebook = ref()
     const visible = ref<boolean>(false);
     const confirmLoading = ref<boolean>(false);
     const isAdd = ref<boolean>(false);
@@ -150,14 +153,17 @@ export default defineComponent({
       visible.value = true;
       // 通过Tool来复制一个新对象不让他影响列表数据
       ebook.value = Tool.copy(record);
+      categoryIds.value = [ebook.value.category1Id,ebook.value.category2Id]
     };
     /**
      * 新增
      */
     const add = () => {
-      visible.value = true;
       ebook.value = {};
+      visible.value = true;
       isAdd.value = true;
+      ebook.value.category1Id = categoryIds.value[0];
+      ebook.value.category2Id = categoryIds.value[1];
     };
     /**
      * 删除
@@ -202,6 +208,7 @@ export default defineComponent({
 
     const handleOk = () => {
       confirmLoading.value = true;
+
       // 判断是否新增
       if (isAdd.value) {
         // 新增
@@ -276,6 +283,24 @@ export default defineComponent({
     };
 
     /**
+     * 查询所有分类
+     */
+    const level1 = ref();
+    const handleQueryCategory = () => {
+      loading.value = true;
+      axios.get("/category/all").then((response) => {
+        loading.value = false
+        const data = response.data
+        if (data.success) {
+          level1.value = [];
+          level1.value = data.data;
+        } else {
+          message.error(data.message);
+        }
+      })
+    };
+
+    /**
      *  表格点击页码时触发
      */
     const handleTableChange = (pagination: any) => {
@@ -286,9 +311,30 @@ export default defineComponent({
     };
 
     /**
+     * 根据分类一的id查询一级分类名称
+     */
+    const getCategoryName = (cid: number)=>{
+      let result = "";
+      level1.value.forEach((item: any)=>{
+        if(item.id === cid) {
+          result = item.name;
+        }else {
+          result = getCategoryName(item.id);
+        }
+      });
+      console.log("分类名称："+result);
+      return result;
+    }
+    /**
+     * 根据分类二的id查询二级分类的名称
+     */
+
+
+    /**
      * 初始的时候也查询一次
      */
     onMounted(() => {
+      handleQueryCategory();
       handleQuery({
         page: 1,
         size: pagination.value.pageSize
@@ -302,7 +348,11 @@ export default defineComponent({
       columns,
       loading,
       handleTableChange,
+      getCategoryName,
       /*--------- 对话框 ----------*/
+      handleQueryCategory,
+      level1,
+      categoryIds,
       ebook,
       visible,
       confirmLoading,
