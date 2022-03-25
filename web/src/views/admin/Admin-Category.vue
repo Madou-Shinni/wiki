@@ -10,7 +10,7 @@
               v-model:value="searchText.text"
               placeholder="搜索"
               style="width: 200px"
-              @search="onSearch({page:1,size:pagination.pageSize})"
+              @search="onSearch()"
           />
         </a-form-item>
         <a-form-item>
@@ -23,9 +23,8 @@
           :columns="columns"
           :row-key="record => record.id"
           :data-source="categorys"
-          :pagination="pagination"
           :loading="loading"
-          @change="handleTableChange"
+          :pagination="false"
       >
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar"/>
@@ -86,12 +85,7 @@ export default defineComponent({
   setup() {
     // ref: 响应式数据(获取和赋值都需要.value)
     const categorys = ref();
-    // 分页
-    const pagination = ref({
-      current: 1,
-      pageSize: 10,
-      total: 0
-    });
+
     const loading = ref(false);
     // 列
     const columns = [
@@ -144,10 +138,7 @@ export default defineComponent({
         console.log(`${id}`)
         if (data.success) {// 保存成功对话框消失，loading效果消失
           // 重新加载列表数据
-          handleQuery({// 加载当前页
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          })
+          handleQuery()
         }
       })
     }
@@ -167,9 +158,6 @@ export default defineComponent({
         const data = response.data
         if (data.success) {
           categorys.value = data.data.list;
-          // 重置分页按钮
-          pagination.value.current = searchValue.page;
-          pagination.value.total = data.data.total;
         } else {
           message.error(data.message);
         }
@@ -188,10 +176,7 @@ export default defineComponent({
             visible.value = false;
             isAdd.value = false;
             // 重新加载列表数据
-            handleQuery({// 加载当前页
-              page: pagination.value.current,
-              size: pagination.value.pageSize
-            })
+            handleQuery()
           }
         })
       } else {
@@ -202,10 +187,7 @@ export default defineComponent({
           if (data.success) {// 保存成功对话框消失，loading效果消失
             visible.value = false;
             // 重新加载列表数据
-            handleQuery({// 加载当前页
-              page: pagination.value.current,
-              size: pagination.value.pageSize
-            })
+            handleQuery()
           }
         })
       }
@@ -215,10 +197,10 @@ export default defineComponent({
     /**
      * 数据查询
      */
-    const handleQuery = (params: any) => {
+    const handleQuery = () => {
       loading.value = true;
       // 参数二必须用{params:{}} 或者 {params}简化写法
-      axios.get("/category/list", {params}).then((response) => {
+      axios.get("/category/all").then((response) => {
         loading.value = false
         const data = response.data
         if (data.success) {
@@ -241,44 +223,27 @@ export default defineComponent({
            * 返回泛型数据，自定义类型
            * private T data;
            */
-          categorys.value = data.data.list;
-          // 重置分页按钮
-          pagination.value.current = params.page;
-          pagination.value.total = data.data.total;
+          categorys.value = data.data;
         } else {
           message.error(data.message);
         }
       })
     };
 
-    /**
-     *  表格点击页码时触发
-     */
-    const handleTableChange = (pagination: any) => {
-      handleQuery({
-        page: pagination.current,
-        size: pagination.pageSize
-      })
-    };
 
     /**
      * 初始的时候也查询一次
      */
     onMounted(() => {
       console.log("发送请求")
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize
-      });
+      handleQuery();
     });
 
     // 返回数据让页面能够使用
     return {
       categorys,
-      pagination,
       columns,
       loading,
-      handleTableChange,
       /*--------- 对话框 ----------*/
       category,
       visible,
