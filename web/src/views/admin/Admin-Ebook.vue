@@ -169,9 +169,9 @@ export default defineComponent({
         // 新增
         axios.post("/ebook/save", ebook.value).then((response) => {
           const data = response.data;
+          confirmLoading.value = false;
           if (data.success) {// 保存成功对话框消失，loading效果消失
             visible.value = false;
-            confirmLoading.value = false;
             isAdd.value = false;
             // 重新加载列表数据
             handleQuery({// 加载当前页
@@ -184,9 +184,9 @@ export default defineComponent({
         // 修改
         axios.put("/ebook/update", ebook.value).then((response) => {
           const data = response.data;
+          confirmLoading.value = false;
           if (data.success) {// 保存成功对话框消失，loading效果消失
             visible.value = false;
-            confirmLoading.value = false;
             // 重新加载列表数据
             handleQuery({// 加载当前页
               page: pagination.value.current,

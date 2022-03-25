@@ -59,7 +59,7 @@ public class EbookController {
      * @return
      */
     @PostMapping("/save")
-    public CommonResult save(@RequestBody EbookSaveReq req) {
+    public CommonResult save(@Validated @RequestBody EbookSaveReq req) {
         ebookService.save(req);
         CommonResult result = new CommonResult<>();
         return result;
