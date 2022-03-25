@@ -60,4 +60,16 @@ public class EbookController {
         CommonResult result = new CommonResult<>();
         return result;
     }
+
+    /**
+     * 根据id删除知识库
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    public CommonResult delete(@PathVariable Long id) {
+        ebookService.delete(id);
+        CommonResult result = new CommonResult<>();
+        return result;
+    }
 }

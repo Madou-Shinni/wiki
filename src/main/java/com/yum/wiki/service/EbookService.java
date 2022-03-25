@@ -77,4 +77,12 @@ public class EbookService {
         ebook.setId(snowFlakeUtil.nextId());
         ebookMapper.insert(ebook);
     }
+
+    /**
+     * 根据ID删除知识库
+     * @param id
+     */
+    public void delete(Long id) {
+        ebookMapper.deleteByPrimaryKey(id);
+    }
 }
