@@ -83,6 +83,7 @@
 import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
+import {Tool} from "@/util/tool";
 
 
 export default defineComponent({
@@ -147,7 +148,8 @@ export default defineComponent({
      */
     const edit = (record: any) => {
       visible.value = true;
-      ebook.value = record;
+      // 通过Tool来复制一个新对象不让他影响列表数据
+      ebook.value = Tool.copy(record);
     };
     /**
      * 新增
