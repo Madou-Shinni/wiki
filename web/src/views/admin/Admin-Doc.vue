@@ -14,11 +14,12 @@
           />
         </a-form-item>
         <a-form-item>
-          <a-button type="primary" @click="add()" size="large">
+          <a-button type="primary" @click="add()">
             新增
           </a-button>
         </a-form-item>
       </a-form>
+      <br/>
       <a-table
           :columns="columns"
           :row-key="record => record.id"
@@ -61,6 +62,21 @@
     <a-form :model="doc" :label-col="{span: 6}" :wrapper-col="{ span: 18}">
       <a-form-item label="名称">
         <a-input v-model:value="doc.name"/>
+      </a-form-item>
+      <a-form-item label="父文档">
+        <a-tree-select
+            v-model:value="doc.parent"
+            style="width: 100%"
+            :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+            :tree-data="treeSelectData"
+            placeholder="请选择父文档"
+            tree-default-expand-all
+            :replaceFields="{title: 'name', key: 'id', value: 'id'}"
+        >
+<!--          <a-tree-select-node key="0" value="0" title="根节点">-->
+<!--          </a-tree-select-node>-->
+        </a-tree-select>
+
       </a-form-item>
       <a-form-item label="父文档">
         <!--<a-input v-model:value="doc.parent"/>-->
@@ -120,10 +136,44 @@ export default defineComponent({
     ];
 
     /*--------- 对话框 ----------*/
+    const treeSelectData = ref();// 1.因为树型选择节点的的组件会随当前编辑的节点数据变化
+    treeSelectData.value = []; // 2.所以定义了一个新变量来增加根节点选项
     const doc = ref({})
     const visible = ref<boolean>(false);
     const confirmLoading = ref<boolean>(false);
     const isAdd = ref<boolean>(false);
+
+    /**
+     * 递归
+     * 将某节点及其子孙节点全部置为disable
+     */
+    const setDisable = (treeSelectData: any, id: any)=>{
+      // 遍历数组，即遍历某一层节点
+      for (let i = 0; i < treeSelectData.length; i++) {
+        const node = treeSelectData[i];
+        if(node.id === id) {
+          // 如果当前节点就是目标节点
+          // 将目标节点置为disable
+          node.disabled = true;
+
+          // 遍历所有子节点，将所有子节点全部都加上disable
+          const children = node.children;
+          if(Tool.isNotEmpty(children)) {
+            for (let j = 0; j < children.length; j++) {
+              setDisable(children,children[j].id)
+            }
+          }
+        }else {
+          // 如果当前节点不是目标节点，则到其子节点再找找看
+          const children = node.children;
+          if (Tool.isNotEmpty(children)) {
+            setDisable(children, id);
+          }
+        }
+      }
+    }
+
+
     /**
      * 编辑
      */
@@ -131,6 +181,11 @@ export default defineComponent({
       visible.value = true;
       // 通过Tool来复制一个新对象不让他影响列表数据
       doc.value = Tool.copy(record);
+      // 不能选择当前节点及其所有子孙节点，作为父节点会使树断开
+      treeSelectData.value = Tool.copy(docs.value);
+      setDisable(treeSelectData.value,record.id);
+      // 为选择树添加一个无
+      treeSelectData.value.unshift({id: 0,  name: '无'});
     };
     /**
      * 新增
@@ -139,6 +194,10 @@ export default defineComponent({
       visible.value = true;
       doc.value = {};
       isAdd.value = true;
+
+      treeSelectData.value = Tool.copy(docs.value);
+      // 为选择树添加一个无
+      treeSelectData.value.unshift({id: 0,  name: '无'});
     };
     /**
      * 删除
@@ -146,7 +205,6 @@ export default defineComponent({
     const handleDelete = (id: number) => {
       axios.delete(`/doc/${id}`).then((response) => {
         const data = response.data;
-        console.log(`${id}`)
         if (data.success) {// 保存成功对话框消失，loading效果消失
           // 重新加载列表数据
           handleQuery()
@@ -215,25 +273,6 @@ export default defineComponent({
         loading.value = false
         const data = response.data
         if (data.success) {
-          /**
-           * 后端返回统一格式
-           * {
-           *   success: ,
-           *   message: ,
-           *   data:{
-           *
-           *   }
-           * }
-           *
-           * 业务上的成功或失败
-           * private boolean success = true;
-           *
-           * 返回信息
-           * private String message;
-           *
-           * 返回泛型数据，自定义类型
-           * private T data;
-           */
           docs.value = data.data;
         } else {
           message.error(data.message);
@@ -251,6 +290,7 @@ export default defineComponent({
 
     // 返回数据让页面能够使用
     return {
+      treeSelectData,
       docs,
       columns,
       loading,
