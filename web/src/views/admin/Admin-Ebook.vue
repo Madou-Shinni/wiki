@@ -14,11 +14,12 @@
           />
         </a-form-item>
         <a-form-item>
-          <a-button type="primary" @click="add()" size="large">
+          <a-button type="primary" @click="add()">
             新增
           </a-button>
         </a-form-item>
       </a-form>
+      <br />
       <a-table
           :columns="columns"
           :row-key="record => record.id"
@@ -294,6 +295,11 @@ export default defineComponent({
         if (data.success) {
           level1.value = [];
           level1.value = data.data;
+          // 加载完分类后在加载知识库，否则分类加载很慢，知识库渲染会报错
+          handleQuery({
+            page: 1,
+            size: pagination.value.pageSize
+          });
         } else {
           message.error(data.message);
         }
@@ -339,10 +345,6 @@ export default defineComponent({
      */
     onMounted(() => {
       handleQueryCategory();
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize
-      });
     });
 
     // 返回数据让页面能够使用
