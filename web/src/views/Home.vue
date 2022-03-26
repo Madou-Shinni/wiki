@@ -4,12 +4,11 @@
       <a-menu
           mode="inline"
           :style="{ height: '100%', borderRight: 0 }"
+          @click="handleClick"
       >
         <a-menu-item key="welcome">
-          <router-link :to="'/'">
             <MailOutlined/>
             <span>欢迎</span>
-          </router-link>
         </a-menu-item>
         <a-sub-menu v-for="item in level1" :key="item.id">
           <template v-slot:title>
@@ -25,9 +24,12 @@
     <a-layout-content
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
-      <!--列表-->
+      <div class="welcome" v-show="isShowWelcome">
+        <h1>欢迎</h1>
+      </div>
+      <!--列表数据-->
       <!--:grid="{gutter:20,column: 3}" 一行三列每一列间距20px-->
-      <a-list item-layout="vertical" size="large" :grid="{gutter:20,column: 3}" :data-source="ebooks">
+      <a-list v-show="!isShowWelcome" item-layout="vertical" size="large" :grid="{gutter:20,column: 3}" :data-source="ebooks">
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
@@ -65,6 +67,7 @@ export default defineComponent({
   setup() {
     // ref: 响应式数据(获取和赋值都需要.value)
     const ebooks = ref();
+    const isShowWelcome = ref(true);
 
     // 列表数据分页
     const pagination = {
@@ -78,6 +81,10 @@ export default defineComponent({
       {type: 'LikeOutlined', text: '156'},
       {type: 'MessageOutlined', text: '2'},
     ];
+
+    const handleClick = (value: any) => {
+      isShowWelcome.value = value.key === 'welcome';
+    }
 
     /**
      * 查询所有分类
@@ -112,6 +119,9 @@ export default defineComponent({
 
     // 返回数据让页面能够使用
     return {
+      handleClick,
+      isShowWelcome,
+
       ebooks,
       pagination,
       actions,
