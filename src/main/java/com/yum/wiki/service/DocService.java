@@ -152,4 +152,15 @@ public class DocService {
         docMapper.deleteByPrimaryKey(id);
     }
 
+    /**
+     * 根据ids批量删除删除文档
+     * @param ids
+     */
+    public void delete(List<String> ids) {
+        DocExample docExample = new DocExample();
+        DocExample.Criteria criteria = docExample.createCriteria();
+        criteria.andIdIn(ids);
+        docMapper.deleteByExample(docExample);
+    }
+
 }

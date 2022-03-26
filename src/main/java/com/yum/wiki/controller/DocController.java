@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -82,12 +83,13 @@ public class DocController {
 
     /**
      * 根据id删除分类
-     * @param id
+     * @param idsStr
      * @return
      */
-    @DeleteMapping("/{id}")
-    public CommonResult delete(@PathVariable Long id) {
-        docService.delete(id);
+    @DeleteMapping("/{idsStr}")
+    public CommonResult delete(@PathVariable String idsStr) {
+        List<String> list = Arrays.asList(idsStr.split(","));
+        docService.delete(list);
         CommonResult result = new CommonResult<>();
         return result;
     }
