@@ -149,6 +149,10 @@
                selectByExampleQueryId="false" />-->
         <!--电子书表-->
         <!--<table tableName="ebook" />-->
-        <table tableName="category" />
+        <!--分类-->
+        <!--<table tableName="category" />-->
+        <!--文档-->
+        <table tableName="doc" />
+
     </context>
 </generatorConfiguration>
