@@ -79,6 +79,9 @@
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort"/>
       </a-form-item>
+      <a-form-item label="内容">
+        <div id="content"></div>
+      </a-form-item>
     </a-form>
   </a-modal>
 </template>
@@ -90,6 +93,7 @@ import {message, Modal} from "ant-design-vue";
 import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
+import E from 'wangeditor'
 
 
 export default defineComponent({
@@ -192,6 +196,7 @@ export default defineComponent({
     /**
      * 编辑
      */
+    const existenceEditor = ref<boolean>(false);
     const edit = (record: any) => {
       visible.value = true;
       // 通过Tool来复制一个新对象不让他影响列表数据
@@ -201,6 +206,14 @@ export default defineComponent({
       setDisable(treeSelectData.value,record.id);
       // 为选择树添加一个无
       treeSelectData.value.unshift({id: 0,  name: '无'});
+
+      if(existenceEditor.value === false) {// 如果富文本编辑器不存在
+        setTimeout(()=>{
+          // 富文本编辑工具
+          new E('#content').create();
+          existenceEditor.value = true;
+        },100)
+      }
     };
     /**
      * 新增
@@ -215,6 +228,13 @@ export default defineComponent({
       treeSelectData.value = Tool.copy(docs.value);
       // 为选择树添加一个无
       treeSelectData.value.unshift({id: 0,  name: '无'});
+      if(existenceEditor.value === false) {// 如果富文本编辑器不存在
+        setTimeout(()=>{
+          // 富文本编辑工具
+          new E('#content').create();
+          existenceEditor.value = true;
+        },100)
+      }
     };
     /**
      * 删除
