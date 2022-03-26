@@ -11,7 +11,7 @@ public class EbookQueryReq extends PageReq {
     private Long categoryId2;
 
     public Long getCategoryId2() {
-        return categoryId2;
+         return categoryId2;
     }
 
     public void setCategoryId2(Long categoryId2) {

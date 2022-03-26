@@ -152,7 +152,7 @@
         <!--分类-->
         <!--<table tableName="category" />-->
         <!--文档-->
-        <table tableName="doc" />
+        <table tableName="doc " />
 
     </context>
 </generatorConfiguration>

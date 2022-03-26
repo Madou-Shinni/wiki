@@ -10,29 +10,24 @@
               v-model:value="searchText.text"
               placeholder="搜索"
               style="width: 200px"
-              @search="onSearch({page:1,size:pagination.pageSize})"
+              @search="onSearch()"
           />
         </a-form-item>
         <a-form-item>
-          <a-button type="primary" @click="add()">
+          <a-button type="primary" @click="add()" size="large">
             新增
           </a-button>
         </a-form-item>
       </a-form>
-      <br/>
       <a-table
           :columns="columns"
           :row-key="record => record.id"
-          :data-source="ebooks"
-          :pagination="pagination"
+          :data-source="docs"
           :loading="loading"
-          @change="handleTableChange"
+          :pagination="false"
       >
         <template #cover="{ text: cover }">
           <img v-if="cover" :src="cover" alt="avatar"/>
-        </template>
-        <template v-slot:category="{text, record}">
-          <span>{{ getCategoryName(record.category1Id) }} / {{ getCategoryName(record.category2Id) }}</span>
         </template>
         <!--record代表一整行的数据,传递给edit方法-->
         <template v-slot:action="{text,record}">
@@ -50,11 +45,6 @@
                 删除
               </a-button>
             </a-popconfirm>
-            <router-link to="/admin/doc">
-              <a-button type="primary">
-                文档管理
-              </a-button>
-            </router-link>
           </a-space>
         </template>
       </a-table>
@@ -62,26 +52,32 @@
   </a-layout>
   <!--对话框-->
   <a-modal
-      title="知识库表单"
+      title="文档表单"
       v-model:visible="visible"
       :confirm-loading="confirmLoading"
       @ok="handleOk"
       :isAdd="isAdd"
   >
-    <a-form :model="ebook" :label-col="{span: 6}" :wrapper-col="{ span: 18}">
-      <a-form-item label="封面">
-        <a-input v-model:value="ebook.cover"/>
-      </a-form-item>
+    <a-form :model="doc" :label-col="{span: 6}" :wrapper-col="{ span: 18}">
       <a-form-item label="名称">
-        <a-input v-model:value="ebook.name"/>
+        <a-input v-model:value="doc.name"/>
       </a-form-item>
-      <a-form-item label="分类">
-        <a-cascader v-model:value="categoryIds"
-                    :field-names="{ label: 'name', value: 'id', children: 'children'}"
-                    :options="level1"/>
+      <a-form-item label="父文档">
+        <!--<a-input v-model:value="doc.parent"/>-->
+        <!--下拉框-->
+        <a-select
+            ref="select"
+            v-model:value="doc.parent"
+        >
+          <a-select-option value="0">无</a-select-option>
+          <a-select-option :value="c.id" v-for="c in docs" :key="c.id"
+          :disabled="doc.id === c.id"> <!--不能选择自己为上级文档-->
+            {{c.name}}
+          </a-select-option>
+        </a-select>
       </a-form-item>
-      <a-form-item label="描述">
-        <a-input v-model:value="ebook.description" type="text"/>
+      <a-form-item label="顺序">
+        <a-input v-model:value="doc.sort"/>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -95,46 +91,26 @@ import {Tool} from "@/util/tool";
 
 
 export default defineComponent({
-  name: 'AdminEbook',
+  name: 'AdminDoc',
   // vue3新函数，组件初始会执行
   setup() {
     // ref: 响应式数据(获取和赋值都需要.value)
-    const ebooks = ref();
-    // 分页
-    const pagination = ref({
-      current: 1,
-      pageSize: 10,
-      total: 0
-    });
+    const docs = ref();
+
     const loading = ref(false);
     // 列
     const columns = [
-      {
-        title: '封面',
-        dataIndex: 'cover',
-        // 渲染
-        slots: {customRender: 'cover'}
-      },
       {
         title: '名称',
         dataIndex: 'name',
       },
       {
-        title: '分类',
-        // 渲染
-        slots: {customRender: 'category'}
+        title: '父文档',
+        dataIndex: 'parent',
       },
       {
-        title: '文档数',
-        dataIndex: 'docCount',
-      },
-      {
-        title: '阅读数',
-        dataIndex: 'viewCount',
-      },
-      {
-        title: '点赞数',
-        dataIndex: 'voteCount',
+        title: '顺序',
+        dataIndex: 'sort',
       },
       {
         title: 'Action',
@@ -144,11 +120,7 @@ export default defineComponent({
     ];
 
     /*--------- 对话框 ----------*/
-    /**
-     * 数组 [100,101] 对应：前端开发/vue
-     */
-    const categoryIds = ref();
-    const ebook = ref()
+    const doc = ref({})
     const visible = ref<boolean>(false);
     const confirmLoading = ref<boolean>(false);
     const isAdd = ref<boolean>(false);
@@ -158,32 +130,26 @@ export default defineComponent({
     const edit = (record: any) => {
       visible.value = true;
       // 通过Tool来复制一个新对象不让他影响列表数据
-      ebook.value = Tool.copy(record);
-      categoryIds.value = [ebook.value.category1Id, ebook.value.category2Id]
+      doc.value = Tool.copy(record);
     };
     /**
      * 新增
      */
     const add = () => {
-      ebook.value = {};
       visible.value = true;
+      doc.value = {};
       isAdd.value = true;
-      ebook.value.category1Id = categoryIds.value[0];
-      ebook.value.category2Id = categoryIds.value[1];
     };
     /**
      * 删除
      */
     const handleDelete = (id: number) => {
-      axios.delete(`/ebook/${id}`).then((response) => {
+      axios.delete(`/doc/${id}`).then((response) => {
         const data = response.data;
         console.log(`${id}`)
         if (data.success) {// 保存成功对话框消失，loading效果消失
           // 重新加载列表数据
-          handleQuery({// 加载当前页
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          })
+          handleQuery()
         }
       })
     }
@@ -193,19 +159,16 @@ export default defineComponent({
     const searchText = ref();
     searchText.value = {};
     const onSearch = (searchValue: any) => {
-      axios.get("/ebook/search", {
-        params: {
+      axios.get("/doc/list", {
+        params:{
           page: searchValue.page,
           size: searchValue.size,
-          text: searchText.value.text
+          name: searchText.value.text
         }
       }).then((response) => {
         const data = response.data
         if (data.success) {
-          ebooks.value = data.data.list;
-          // 重置分页按钮
-          pagination.value.current = searchValue.page;
-          pagination.value.total = data.data.total;
+          docs.value = data.data.list;
         } else {
           message.error(data.message);
         }
@@ -214,35 +177,28 @@ export default defineComponent({
 
     const handleOk = () => {
       confirmLoading.value = true;
-
       // 判断是否新增
       if (isAdd.value) {
         // 新增
-        axios.post("/ebook/save", ebook.value).then((response) => {
+        axios.post("/doc/save", doc.value).then((response) => {
           const data = response.data;
           confirmLoading.value = false;
           if (data.success) {// 保存成功对话框消失，loading效果消失
             visible.value = false;
             isAdd.value = false;
             // 重新加载列表数据
-            handleQuery({// 加载当前页
-              page: pagination.value.current,
-              size: pagination.value.pageSize
-            })
+            handleQuery()
           }
         })
       } else {
         // 修改
-        axios.put("/ebook/update", ebook.value).then((response) => {
+        axios.put("/doc/update", doc.value).then((response) => {
           const data = response.data;
           confirmLoading.value = false;
           if (data.success) {// 保存成功对话框消失，loading效果消失
             visible.value = false;
             // 重新加载列表数据
-            handleQuery({// 加载当前页
-              page: pagination.value.current,
-              size: pagination.value.pageSize
-            })
+            handleQuery()
           }
         })
       }
@@ -252,10 +208,10 @@ export default defineComponent({
     /**
      * 数据查询
      */
-    const handleQuery = (params: any) => {
+    const handleQuery = () => {
       loading.value = true;
       // 参数二必须用{params:{}} 或者 {params}简化写法
-      axios.get("/ebook/list", {params}).then((response) => {
+      axios.get("/doc/all").then((response) => {
         loading.value = false
         const data = response.data
         if (data.success) {
@@ -278,89 +234,28 @@ export default defineComponent({
            * 返回泛型数据，自定义类型
            * private T data;
            */
-          ebooks.value = data.data.list;
-          // 重置分页按钮
-          pagination.value.current = params.page;
-          pagination.value.total = data.data.total;
+          docs.value = data.data;
         } else {
           message.error(data.message);
         }
       })
     };
-
-    /**
-     * 查询所有分类
-     */
-    const level1 = ref();
-    const handleQueryCategory = () => {
-      loading.value = true;
-      axios.get("/category/all").then((response) => {
-        loading.value = false
-        const data = response.data
-        if (data.success) {
-          level1.value = [];
-          level1.value = data.data;
-          // 加载完分类后在加载知识库，否则分类加载很慢，知识库渲染会报错
-          handleQuery({
-            page: 1,
-            size: pagination.value.pageSize
-          });
-        } else {
-          message.error(data.message);
-        }
-      })
-    };
-
-    /**
-     *  表格点击页码时触发
-     */
-    const handleTableChange = (pagination: any) => {
-      handleQuery({
-        page: pagination.current,
-        size: pagination.pageSize
-      })
-    };
-
-    /**
-     * 根据分类一的id查询一级分类名称
-     */
-    const getCategoryName = (cid: number) => {
-      let result = "";
-      level1.value.forEach((item: any) => {
-        if (item.id === cid) {
-          result = item.name;
-        } else {
-          item.children.forEach((item: any) => {
-            if (item.id === cid) {
-              result = item.name;
-            }
-          });
-        }
-      });
-      return result;
-    }
 
 
     /**
      * 初始的时候也查询一次
      */
     onMounted(() => {
-      handleQueryCategory();
+      handleQuery();
     });
 
     // 返回数据让页面能够使用
     return {
-      ebooks,
-      pagination,
+      docs,
       columns,
       loading,
-      handleTableChange,
-      getCategoryName,
       /*--------- 对话框 ----------*/
-      handleQueryCategory,
-      level1,
-      categoryIds,
-      ebook,
+      doc,
       visible,
       confirmLoading,
       isAdd,
