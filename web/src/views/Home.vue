@@ -44,8 +44,8 @@
                 <a :href="item.href">{{ item.name }}</a>
               </template>
               <!--封面-->
-              <template #avatar>
-                <a-avatar :src="item.cover"/>
+              <template #avatar width="auto">
+                <a-avatar :src="item.cover" />
               </template>
             </a-list-item-meta>
             {{ item.content }}

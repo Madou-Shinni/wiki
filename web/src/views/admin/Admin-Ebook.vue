@@ -329,15 +329,11 @@ export default defineComponent({
             if(item.id === cid) {
               result = item.name;
             }
-          })
+          });
         }
       });
       return result;
     }
-
-    /**
-     * 根据分类二的id查询二级分类的名称
-     */
 
 
     /**
