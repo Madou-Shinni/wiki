@@ -11,13 +11,13 @@ import com.yum.wiki.request.DocUpdateReq;
 import com.yum.wiki.result.DocQueryRes;
 import com.yum.wiki.result.PageRes;
 import com.yum.wiki.result.tree.DocQueryResTree;
+import com.yum.wiki.service.exception.DocParentEqualsIdAndChildrenException;
 import com.yum.wiki.utils.CopyUtil;
 import com.yum.wiki.utils.SnowFlakeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,10 +49,10 @@ public class DocService {
         // 封装树型返回结果
         List<DocQueryResTree> result = CopyUtil.copyList(docList, DocQueryResTree.class);
         List<DocQueryResTree> finalResult = result.stream()
-                // 过滤出一级分类
+                // 过滤出一级文档
                 .filter(item->item.getParent().equals(0L))
                 .map(item->{
-                    // 设置子级分类列表
+                    // 设置子级文档列表
                     item.setChildren(getChildrens(item,result));
                     return item;
                 })
@@ -61,7 +61,7 @@ public class DocService {
     }
 
     /**
-     * 递归子级分类列表
+     * 递归子级文档列表
      *
      * @param menu
      * @param list
@@ -69,9 +69,9 @@ public class DocService {
      */
     public List<DocQueryResTree> getChildrens(DocQueryResTree menu,List<DocQueryResTree> list) {
         List<DocQueryResTree> resTreeList = list.stream()
-                // 过滤出当前分类的所有子级分类
+                // 过滤出当前文档的所有子级文档
                 .filter(item->item.getParent().equals(menu.getId()))
-                // 给当前分类设置子级分类(递归设置)
+                // 给当前文档设置子级文档(递归设置)
                 .map(item->{
                     item.setChildren(getChildrens(item,list));
                     return item;
@@ -111,15 +111,32 @@ public class DocService {
     }
 
     /**
-     * 修改分类
+     * 修改文档
      */
     public void update(DocUpdateReq req) {
+        // 不允许修改目标父节点为自身节点及其子孙节点（否则树型会断开消失）
+        if(req.getParent().equals(req.getId())) {// 如果目标节点等于自身节点则修改失败
+            throw new DocParentEqualsIdAndChildrenException("不允许修改目标节点为自身节点及其子孙节点");
+        }
+        // 根据id查询子孙节点
+        DocExample docExample = new DocExample();
+        DocExample.Criteria criteria = docExample.createCriteria();
+        criteria.andParentEqualTo(req.getId());
+        List<Doc> docs = docMapper.selectByExample(docExample);
+        if (!docs.isEmpty()) {// 如果存在子孙节点则比较目标节点是否是子孙节点
+            docs.stream().forEach(item->{
+                // 如果目标节点等于其子孙节点则修改失败
+                if(req.getParent().equals(item.getId())) {
+                    throw new DocParentEqualsIdAndChildrenException("不允许修改目标节点为自身节点及其子孙节点");
+                }
+            });
+        }
         Doc doc = CopyUtil.copy(req,Doc.class);
         docMapper.updateByPrimaryKey(doc);
     }
 
     /**
-     * 新增分类
+     * 新增文档
      */
     public void save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req,Doc.class);
@@ -128,7 +145,7 @@ public class DocService {
     }
 
     /**
-     * 根据ID删除分类
+     * 根据ID删除文档
      * @param id
      */
     public void delete(Long id) {
