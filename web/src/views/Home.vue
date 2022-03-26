@@ -33,10 +33,10 @@
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
-          <span v-for="{ type, text } in actions" :key="type">
-            <component v-bind:is="type" style="margin-right: 8px"/>
-            {{ text }}
-          </span>
+              <span v-for="{ type, text } in actions" :key="type">
+                <component v-bind:is="type" style="margin-right: 8px"/>
+                {{ text }}
+              </span>
             </template>
             <a-list-item-meta :description="item.description">
               <!--标题-->
@@ -71,9 +71,9 @@ export default defineComponent({
 
     // 列表数据分页
     const pagination = {
-      onChange: (page: number) => {
-        console.log(page);
-      },
+      // onChange: (page: number) => {
+      //   console.log(page);
+      // },
       pageSize: 3,
     };
     const actions: Record<string, string>[] = [
@@ -82,8 +82,35 @@ export default defineComponent({
       {type: 'MessageOutlined', text: '2'},
     ];
 
+    /**
+     * 查询知识库
+     */
+    const handleQueryEbook = ()=>{
+      axios.get("/ebook/list", {
+        params: {
+          page: 1,
+          size: 1000,
+          categoryId2
+        }
+      }).then(
+          (response) => {
+            const data = response.data
+            // 我们后端封装的返回数据的数据集是对象.data
+            ebooks.value = data.data.list;
+          })
+    }
+
+    // 次级分类id
+    let categoryId2 = 0;
     const handleClick = (value: any) => {
-      isShowWelcome.value = value.key === 'welcome';
+      if(value.key === 'welcome') {
+        isShowWelcome.value = true;
+      }else {
+        categoryId2 = value.key;
+        isShowWelcome.value = false;
+        handleQueryEbook();
+      }
+      // isShowWelcome.value = value.key === 'welcome';
     }
 
     /**
@@ -104,17 +131,6 @@ export default defineComponent({
 
     onMounted(() => {
       handleQueryCategory();
-      axios.get("/ebook/list", {
-        params: {
-          page: 1,
-          size: 1000
-        }
-      }).then(
-          (response) => {
-            const data = response.data
-            // 我们后端封装的返回数据的数据集是对象.data
-            ebooks.value = data.data;
-          })
     })
 
     // 返回数据让页面能够使用
