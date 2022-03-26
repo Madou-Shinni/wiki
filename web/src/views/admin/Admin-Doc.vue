@@ -78,20 +78,6 @@
         </a-tree-select>
 
       </a-form-item>
-      <a-form-item label="父文档">
-        <!--<a-input v-model:value="doc.parent"/>-->
-        <!--下拉框-->
-        <a-select
-            ref="select"
-            v-model:value="doc.parent"
-        >
-          <a-select-option value="0">无</a-select-option>
-          <a-select-option :value="c.id" v-for="c in docs" :key="c.id"
-          :disabled="doc.id === c.id"> <!--不能选择自己为上级文档-->
-            {{c.name}}
-          </a-select-option>
-        </a-select>
-      </a-form-item>
       <a-form-item label="顺序">
         <a-input v-model:value="doc.sort"/>
       </a-form-item>
@@ -104,12 +90,15 @@ import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
+import {useRoute} from "vue-router";
 
 
 export default defineComponent({
   name: 'AdminDoc',
   // vue3新函数，组件初始会执行
   setup() {
+    // 路由参数
+    const route = useRoute();
     // ref: 响应式数据(获取和赋值都需要.value)
     const docs = ref();
 
@@ -192,7 +181,9 @@ export default defineComponent({
      */
     const add = () => {
       visible.value = true;
-      doc.value = {};
+      doc.value = {
+        ebookId: route.query.ebookId
+      };
       isAdd.value = true;
 
       treeSelectData.value = Tool.copy(docs.value);
