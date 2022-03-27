@@ -110,6 +110,8 @@ export default defineComponent({
   name: 'AdminDoc',
   // vue3新函数，组件初始会执行
   setup() {
+    // 富文本编辑工具
+    let editor: any;
     //tableKey
     const tableKey = ref();
     // 路由参数
@@ -135,7 +137,8 @@ export default defineComponent({
     /*--------- 对话框 ----------*/
     const treeSelectData = ref();// 1.因为树型选择节点的的组件会随当前编辑的节点数据变化
     treeSelectData.value = []; // 2.所以定义了一个新变量来增加根节点选项
-    const doc = ref({})
+    const doc = ref();
+    doc.value = {};
     const visible = ref<boolean>(false);
     const confirmLoading = ref<boolean>(false);
     const isAdd = ref<boolean>(false);
@@ -277,6 +280,7 @@ export default defineComponent({
 
     const handleSave = () => {
       confirmLoading.value = true;
+      doc.value.content = editor.txt.html();
       // 判断是否新增
       if (isAdd.value) {
         // 新增
@@ -332,8 +336,7 @@ export default defineComponent({
     onMounted(() => {
       handleQuery();
       setTimeout(()=>{
-        // 富文本编辑工具
-        const editor = new E('#content');
+        editor = new E('#content');
         editor.config.zIndex = 0;
         editor.create();
       },100)

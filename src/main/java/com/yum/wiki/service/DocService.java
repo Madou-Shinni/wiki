@@ -2,8 +2,10 @@ package com.yum.wiki.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.yum.wiki.domain.Content;
 import com.yum.wiki.domain.Doc;
 import com.yum.wiki.domain.DocExample;
+import com.yum.wiki.mapper.ContentMapper;
 import com.yum.wiki.mapper.DocMapper;
 import com.yum.wiki.request.DocQueryReq;
 import com.yum.wiki.request.DocSaveReq;
@@ -32,6 +34,8 @@ public class DocService {
 
     @Autowired
     private DocMapper docMapper;
+    @Autowired
+    private ContentMapper contentMapper;
     @Autowired
     private SnowFlakeUtil snowFlakeUtil;
 
@@ -132,7 +136,12 @@ public class DocService {
             });
         }
         Doc doc = CopyUtil.copy(req,Doc.class);
+        Content content = CopyUtil.copy(req,Content.class);
         docMapper.updateByPrimaryKey(doc);
+        int rows = contentMapper.updateByPrimaryKeyWithBLOBs(content);
+        if(rows == 0) {// 修改文档时可能内容表中没有该条数据，需要插入数据
+            contentMapper.insert(content);
+        }
     }
 
     /**
@@ -140,8 +149,11 @@ public class DocService {
      */
     public void save(DocSaveReq req) {
         Doc doc = CopyUtil.copy(req,Doc.class);
+        Content content = CopyUtil.copy(req,Content.class);
         doc.setId(snowFlakeUtil.nextId());
+        content.setId(doc.getId());
         docMapper.insert(doc);
+        contentMapper.insert(content);
     }
 
     /**

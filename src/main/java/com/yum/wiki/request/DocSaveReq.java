@@ -18,20 +18,32 @@ public class DocSaveReq implements Serializable {
     @NotNull(message = "【顺序】不能为空")
     private Integer sort;
 
+    @NotNull(message = "【内容】不能为空")
+    private String content;
+
     private Integer viewCount;
 
     private Integer voteCount;
 
     private static final long serialVersionUID = 1L;
 
-    public DocSaveReq(Long id, Long ebookId, Long parent, String name, Integer sort, Integer viewCount, Integer voteCount) {
+    public DocSaveReq(Long id, Long ebookId, Long parent, String name, Integer sort, String content, Integer viewCount, Integer voteCount) {
         this.id = id;
         this.ebookId = ebookId;
         this.parent = parent;
         this.name = name;
         this.sort = sort;
+        this.content = content;
         this.viewCount = viewCount;
         this.voteCount = voteCount;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public DocSaveReq() {
