@@ -32,9 +32,9 @@ public class DocController {
      * 一次性返回所有数据
      * @return
      */
-    @GetMapping("/all")
-    public CommonResult all() {
-        List<DocQueryResTree> list = docService.all();
+    @GetMapping("/all/{ebookId}")
+    public CommonResult all(@PathVariable Long ebookId) {
+        List<DocQueryResTree> list = docService.all(ebookId);
         CommonResult<List<DocQueryResTree>> result = new CommonResult<>();
         result.setData(list);
         return result;

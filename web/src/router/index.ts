@@ -29,7 +29,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/admin/doc',
     name: '/Admin-Doc.vue',
     component: () => import('../views/admin/Admin-Doc.vue')
-  }
+  },
+  {
+    path: '/doc',
+    name: '/Doc.vue',
+    component: () => import('../views/Doc.vue')
+  },
 ]
 
 const router = createRouter({

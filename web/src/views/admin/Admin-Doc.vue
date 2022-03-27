@@ -285,7 +285,7 @@ export default defineComponent({
     const handleQuery = () => {
       loading.value = true;
       // 参数二必须用{params:{}} 或者 {params}简化写法
-      axios.get("/doc/all").then((response) => {
+      axios.get(`/doc/all/${route.query.ebookId}`).then((response) => {
         loading.value = false
         const data = response.data
         if (data.success) {
