@@ -8,14 +8,6 @@
         <a-col :span="8">
           <a-form layout="inline" :model="searchText">
             <a-form-item>
-              <a-input-search
-                  v-model:value="searchText.text"
-                  placeholder="搜索"
-                  style="width: 200px"
-                  @search="onSearch()"
-              />
-            </a-form-item>
-            <a-form-item>
               <a-button type="primary" @click="add()">
                 新增
               </a-button>
@@ -23,12 +15,14 @@
           </a-form>
           <br/>
           <a-table
+              :key="tableKey"
               :columns="columns"
               :row-key="record => record.id"
               :data-source="docs"
               :loading="loading"
               :pagination="false"
               size="small"
+              :defaultExpandAllRows="true"
           >
             <template #name="{ text, record }">
               {{ record.sort }} {{ text }}
@@ -116,6 +110,8 @@ export default defineComponent({
   name: 'AdminDoc',
   // vue3新函数，组件初始会执行
   setup() {
+    //tableKey
+    const tableKey = ref();
     // 路由参数
     const route = useRoute();
     // ref: 响应式数据(获取和赋值都需要.value)
@@ -290,6 +286,7 @@ export default defineComponent({
           if (data.success) {// 保存成功对话框消失，loading效果消失
             visible.value = false;
             isAdd.value = false;
+            doc.value = {};
             // 重新加载列表数据
             handleQuery()
           }
@@ -320,6 +317,8 @@ export default defineComponent({
         const data = response.data
         if (data.success) {
           docs.value = data.data;
+          // 修改tableKey使之可以展开
+          tableKey.value = Math.random();
         } else {
           message.error(data.message);
         }
@@ -332,14 +331,17 @@ export default defineComponent({
      */
     onMounted(() => {
       handleQuery();
-      // 富文本编辑工具
-      const editor = new E('#content');
-      editor.config.zIndex = 0;
-      editor.create();
+      setTimeout(()=>{
+        // 富文本编辑工具
+        const editor = new E('#content');
+        editor.config.zIndex = 0;
+        editor.create();
+      },100)
     });
 
     // 返回数据让页面能够使用
     return {
+      tableKey,
       treeSelectData,
       docs,
       columns,
