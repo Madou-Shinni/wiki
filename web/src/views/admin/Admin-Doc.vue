@@ -294,6 +294,8 @@ export default defineComponent({
           tableKey.value = Math.random();
           // 父文档下拉框初始化，相当于新增
           treeSelectData.value = Tool.copy(docs.value);
+          // 添加一个根节点 '无'
+          treeSelectData.value.unshift({id: 0, name: '无'})
         } else {
           message.error(data.message);
         }
