@@ -85,15 +85,6 @@
       </a-row>
     </a-layout-content>
   </a-layout>
-  <!--对话框-->
-<!--  <a-modal
-      title="文档表单"
-      v-model:visible="visible"
-      :confirm-loading="confirmLoading"
-      @ok="handleOk"
-      :isAdd="isAdd"
-  >
-  </a-modal>-->
 </template>
 
 <script lang="ts">
@@ -139,8 +130,6 @@ export default defineComponent({
     treeSelectData.value = []; // 2.所以定义了一个新变量来增加根节点选项
     const doc = ref();
     doc.value = {};
-    const visible = ref<boolean>(false);
-    const confirmLoading = ref<boolean>(false);
     const isAdd = ref<boolean>(false);
 
     /**
@@ -205,7 +194,8 @@ export default defineComponent({
      * 编辑
      */
     const edit = (record: any) => {
-      visible.value = true;
+      // 清空富文本框的内容
+      editor.txt.html("");
       // 通过Tool来复制一个新对象不让他影响列表数据
       doc.value = Tool.copy(record);
       // 等待doc.value有值，查询文档内容
@@ -220,7 +210,8 @@ export default defineComponent({
      * 新增
      */
     const add = () => {
-      visible.value = true;
+      // 清空富文本框的内容
+      editor.txt.html("");
       doc.value = {
         ebookId: route.query.ebookId
       };
@@ -244,6 +235,7 @@ export default defineComponent({
           axios.delete(`/doc/${ids.join(",")}`).then((response) => {
             const data = response.data;
             if (data.success) {// 保存成功对话框消失，loading效果消失
+              message.success("删除成功！");
               // 重新加载列表数据
               ids.length = 0;// 清空数组
               handleQuery()
@@ -258,39 +250,15 @@ export default defineComponent({
       showConfirm(id);
     }
 
-    /**
-     * 搜索
-     */
-    const searchText = ref();
-    searchText.value = {};
-    const onSearch = (searchValue: any) => {
-      axios.get("/doc/list", {
-        params:{
-          page: searchValue.page,
-          size: searchValue.size,
-          name: searchText.value.text
-        }
-      }).then((response) => {
-        const data = response.data
-        if (data.success) {
-          docs.value = data.data.list;
-        } else {
-          message.error(data.message);
-        }
-      })
-    };
-
     const handleSave = () => {
-      confirmLoading.value = true;
       doc.value.content = editor.txt.html();
       // 判断是否新增
       if (isAdd.value) {
         // 新增
         axios.post("/doc/save", doc.value).then((response) => {
           const data = response.data;
-          confirmLoading.value = false;
           if (data.success) {// 保存成功对话框消失，loading效果消失
-            visible.value = false;
+            message.success("保存成功！")
             isAdd.value = false;
             doc.value = {};
             // 重新加载列表数据
@@ -301,9 +269,8 @@ export default defineComponent({
         // 修改
         axios.put("/doc/update", doc.value).then((response) => {
           const data = response.data;
-          confirmLoading.value = false;
           if (data.success) {// 保存成功对话框消失，loading效果消失
-            visible.value = false;
+            message.success("修改成功！");
             // 重新加载列表数据
             handleQuery()
           }
@@ -366,10 +333,8 @@ export default defineComponent({
       docs,
       columns,
       loading,
-      /*--------- 对话框 ----------*/
+
       doc,
-      visible,
-      confirmLoading,
       isAdd,
       showConfirm,
 
@@ -378,11 +343,6 @@ export default defineComponent({
       handleDelete,
 
       handleSave,
-      /*-------------------------*/
-      /*----------- 搜索 --------*/
-      searchText,
-      onSearch
-      /*-------------------------*/
     }
   }
 });
