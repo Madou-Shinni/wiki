@@ -292,6 +292,8 @@ export default defineComponent({
           docs.value = data.data;
           // 修改tableKey使之可以展开
           tableKey.value = Math.random();
+          // 父文档下拉框初始化，相当于新增
+          treeSelectData.value = Tool.copy(docs.value);
         } else {
           message.error(data.message);
         }
