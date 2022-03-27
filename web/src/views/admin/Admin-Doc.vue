@@ -78,14 +78,31 @@
               <a-input v-model:value="doc.sort" placeholder="顺序"/>
             </a-form-item>
             <a-form-item>
+              <a-button type="primary" @click="handlePreviewContent">
+                内容预览
+                <EyeOutlined />
+              </a-button>
+            </a-form-item>
+            <a-form-item>
               <div id="content"></div>
             </a-form-item>
           </a-form>
         </a-col>
       </a-row>
+      <a-drawer
+          width="900"
+          placement="right"
+          :closable="false"
+          v-model:visible="drawerVisible"
+      >
+        <div class="wangEditor" :innerHTML="previewHtml"></div>
+      </a-drawer>
     </a-layout-content>
   </a-layout>
 </template>
+
+
+
 
 <script lang="ts">
 import {createVNode, defineComponent, onMounted, ref} from 'vue';
@@ -125,12 +142,25 @@ export default defineComponent({
       },
     ];
 
-    /*--------- 对话框 ----------*/
     const treeSelectData = ref();// 1.因为树型选择节点的的组件会随当前编辑的节点数据变化
     treeSelectData.value = []; // 2.所以定义了一个新变量来增加根节点选项
     const doc = ref();
     doc.value = {};
     const isAdd = ref<boolean>(false);
+
+    /**
+     * 富文本预览
+     */
+    const drawerVisible = ref(false);
+    const previewHtml = ref();
+    const handlePreviewContent = () => {
+      const html = editor.txt.html();
+      previewHtml.value = html;
+      drawerVisible.value = true;
+    };
+    const onDrawerClose = () => {
+      drawerVisible.value = false;
+    }
 
     /**
      * 递归
@@ -326,7 +356,6 @@ export default defineComponent({
       setTimeout(()=>{
         editor = new E('#content');
         editor.config.zIndex = 0;
-        editor.config.pasteFilterStyle = false;// 关闭粘贴样式过滤
         editor.create();
       },100)
     });
@@ -348,16 +377,13 @@ export default defineComponent({
       handleDelete,
 
       handleSave,
+
+      /** 富文本预览 */
+      drawerVisible,
+      previewHtml,
+      handlePreviewContent,
+      onDrawerClose,
     }
   }
 });
 </script>
-
-<style scoped>
-img {
-  width: 50px;
-  height: 50px;
-  line-height: 50px;
-  border-radius: 8%;
-}
-</style>
