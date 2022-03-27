@@ -152,7 +152,8 @@
         <!--分类-->
         <!--<table tableName="category" />-->
         <!--文档-->
-        <table tableName="doc " />
-
+        <!--<table tableName="doc" />-->
+        <!--文档内容-->
+        <table tableName="content" />
     </context>
 </generatorConfiguration>
