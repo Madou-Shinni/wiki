@@ -208,6 +208,8 @@ export default defineComponent({
       visible.value = true;
       // 通过Tool来复制一个新对象不让他影响列表数据
       doc.value = Tool.copy(record);
+      // 等待doc.value有值，查询文档内容
+      handleQueryContent();
       // 不能选择当前节点及其所有子孙节点，作为父节点会使树断开
       treeSelectData.value = Tool.copy(docs.value);
       setDisable(treeSelectData.value,record.id);
@@ -323,6 +325,21 @@ export default defineComponent({
           docs.value = data.data;
           // 修改tableKey使之可以展开
           tableKey.value = Math.random();
+        } else {
+          message.error(data.message);
+        }
+      })
+    };
+
+    /**
+     * 内容查询
+     */
+    const handleQueryContent = () => {
+      axios.get(`/doc/findContent/${doc.value.id}`).then((response) => {
+        loading.value = false
+        const data = response.data
+        if (data.success) {
+          editor.txt.html(data.data);
         } else {
           message.error(data.message);
         }

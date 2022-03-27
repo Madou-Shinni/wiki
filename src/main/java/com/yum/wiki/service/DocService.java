@@ -13,6 +13,7 @@ import com.yum.wiki.request.DocUpdateReq;
 import com.yum.wiki.result.DocQueryRes;
 import com.yum.wiki.result.PageRes;
 import com.yum.wiki.result.tree.DocQueryResTree;
+import com.yum.wiki.service.exception.ContentNullException;
 import com.yum.wiki.service.exception.DocParentEqualsIdAndChildrenException;
 import com.yum.wiki.utils.CopyUtil;
 import com.yum.wiki.utils.SnowFlakeUtil;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -175,4 +177,16 @@ public class DocService {
         docMapper.deleteByExample(docExample);
     }
 
+    /**
+     * 根据id查询文档内容
+     *
+     * @return
+     */
+    public String findContent(Long id) {
+        Content content = contentMapper.selectByPrimaryKey(id);
+        if(ObjectUtils.isEmpty(content)) {
+            throw new ContentNullException("id【"+id+"】文档内容为空！");
+        }
+        return content.getContent();
+    }
 }

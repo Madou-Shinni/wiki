@@ -2,6 +2,7 @@ package com.yum.wiki.controller.exceptionhandle;
 
 import com.yum.wiki.result.CommonResult;
 import com.yum.wiki.service.exception.BaseException;
+import com.yum.wiki.service.exception.ContentNullException;
 import com.yum.wiki.service.exception.DocParentEqualsIdAndChildrenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,16 +24,33 @@ public class ControllerExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(value = {BindException.class, BaseException.class})
-    public CommonResult validationExceptionHandler(Exception e) {
+    @ExceptionHandler(value = {BindException.class})
+    public CommonResult validationExceptionHandler(BindException e) {
         CommonResult result = new CommonResult<>();
         result.setSuccess(false);
         if(e instanceof BindException) {
-            LOG.warn("参数校验失败：{}", ((BindException) e).getBindingResult().getAllErrors().get(0).getDefaultMessage());
-            result.setMessage(((BindException) e).getBindingResult().getAllErrors().get(0).getDefaultMessage());
-        }else if(e instanceof DocParentEqualsIdAndChildrenException) {
+            LOG.warn("参数校验失败：{}", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+            result.setMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        }
+        return result;
+    }
+
+    /**
+     * 自定义抛出异常处理
+     *
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = {BaseException.class})
+    public CommonResult ThrowException(Throwable e) {
+        CommonResult result = new CommonResult<>();
+        result.setSuccess(false);
+        if(e instanceof DocParentEqualsIdAndChildrenException) {
             LOG.warn("收到异常攻击：文档修改接口受到攻击");
             result.setMessage(e.getMessage());
+        }else if(e instanceof ContentNullException) {
+            LOG.warn(e.getMessage());
+            result.setMessage("文档内容为空");
         }
         return result;
     }

@@ -93,4 +93,12 @@ public class DocController {
         CommonResult result = new CommonResult<>();
         return result;
     }
+
+    @GetMapping("/findContent/{id}")
+    public CommonResult findContent(@PathVariable Long id) {
+        String content = docService.findContent(id);
+        CommonResult<String> result = new CommonResult<>();
+        result.setData(content);
+        return result;
+    }
 }
