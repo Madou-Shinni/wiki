@@ -326,6 +326,7 @@ export default defineComponent({
       setTimeout(()=>{
         editor = new E('#content');
         editor.config.zIndex = 0;
+        editor.config.pasteFilterStyle = false;// 关闭粘贴样式过滤
         editor.create();
       },100)
     });
