@@ -1,11 +1,9 @@
 package com.yum.wiki.controller;
 
-import com.yum.wiki.request.UserQueryReq;
-import com.yum.wiki.request.UserResetPasswordReq;
-import com.yum.wiki.request.UserSaveReq;
-import com.yum.wiki.request.UserUpdateReq;
+import com.yum.wiki.request.*;
 import com.yum.wiki.result.CommonResult;
 import com.yum.wiki.result.PageRes;
+import com.yum.wiki.result.UserLoginRes;
 import com.yum.wiki.result.UserQueryRes;
 import com.yum.wiki.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +89,20 @@ public class UserController {
     public CommonResult delete(@PathVariable Long id) {
         userService.delete(id);
         CommonResult result = new CommonResult<>();
+        return result;
+    }
+
+    /**
+     * 登录
+     * @param req
+     * @return
+     */
+    @PostMapping("/login")
+    public CommonResult login(@Validated @RequestBody UserLoginReq req) {
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));// 加密
+        UserLoginRes res = userService.login(req);
+        CommonResult result = new CommonResult<>();
+        result.setData(res);
         return result;
     }
 

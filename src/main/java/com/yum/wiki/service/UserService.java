@@ -5,12 +5,11 @@ import com.github.pagehelper.PageInfo;
 import com.yum.wiki.domain.User;
 import com.yum.wiki.domain.UserExample;
 import com.yum.wiki.mapper.UserMapper;
-import com.yum.wiki.request.UserQueryReq;
-import com.yum.wiki.request.UserResetPasswordReq;
-import com.yum.wiki.request.UserSaveReq;
-import com.yum.wiki.request.UserUpdateReq;
+import com.yum.wiki.request.*;
 import com.yum.wiki.result.PageRes;
+import com.yum.wiki.result.UserLoginRes;
 import com.yum.wiki.result.UserQueryRes;
+import com.yum.wiki.service.exception.LoginException;
 import com.yum.wiki.service.exception.LoginNameEqualsException;
 import com.yum.wiki.utils.CopyUtil;
 import com.yum.wiki.utils.SnowFlakeUtil;
@@ -123,5 +122,27 @@ public class UserService {
             return null;
         }
         return userList.get(0);
+    }
+
+    /**
+     *  登录（防止被攻击应该统一返回用户名或密码不正确而不是具体信息）
+     * （日志打印应该更详细：使我们能更容易的分析问题）
+     *  -- 1.频繁出现密码错误可能是有人在破解密码，需要锁定账户
+     * @param req
+     * @return
+     */
+    public UserLoginRes login(UserLoginReq req) {
+        User user = SelectByLoginName(req.getLoginName());
+        if(ObjectUtils.isEmpty(user)) {
+            // 用户不存在!
+            LOG.info("用户名不存在：{}",req.getLoginName());
+            throw new LoginException("用户名或密码不正确！");
+        }else if(!user.getPassword().equals(req.getPassword())) {// 比对查出来的密码和前端传过来加密之后的密码
+            // 密码不正确
+            LOG.info("输入密码错误，输入的密码：{},数据库的密码：{}",req.getLoginName(),user.getPassword());
+            throw new LoginException("用户名或密码不正确！");
+        }
+        UserLoginRes res = CopyUtil.copy(user, UserLoginRes.class);
+        return res;
     }
 }

@@ -1,10 +1,7 @@
 package com.yum.wiki.controller.exceptionhandle;
 
 import com.yum.wiki.result.CommonResult;
-import com.yum.wiki.service.exception.BaseException;
-import com.yum.wiki.service.exception.ContentNullException;
-import com.yum.wiki.service.exception.DocParentEqualsIdAndChildrenException;
-import com.yum.wiki.service.exception.LoginNameEqualsException;
+import com.yum.wiki.service.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
@@ -54,6 +51,8 @@ public class ControllerExceptionHandler {
             result.setMessage("文档内容为空");
         }else if(e instanceof LoginNameEqualsException) {
             LOG.warn(e.getMessage());
+            result.setMessage(e.getMessage());
+        }else if(e instanceof LoginException) {
             result.setMessage(e.getMessage());
         }
         return result;
