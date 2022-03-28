@@ -9,6 +9,7 @@
               :defaultExpandAll="true"
               :replaceFields="{title: 'name', key: 'id', value: 'id'}"
               @select="onSelect"
+              :defaultSelectedKeys="defaultSelectedKeys"
           >
           </a-tree>
         </a-col>
@@ -95,6 +96,9 @@ export default defineComponent({
     // 文档内容
     const html = ref();
 
+    // 默认节点
+    const defaultSelectedKeys = ref();
+    defaultSelectedKeys.value = [];
 
     /**
      * 数据查询
@@ -105,6 +109,11 @@ export default defineComponent({
         const data = response.data
         if (data.success) {
           docs.value = data.data;
+
+          if(Tool.isNotEmpty(docs)) {
+            defaultSelectedKeys.value = [docs.value[0].id];
+            handleQueryContent(docs.value[0].id);
+          }
         } else {
           message.error(data.message);
         }
@@ -145,6 +154,7 @@ export default defineComponent({
 
     // 返回数据让页面能够使用
     return {
+      defaultSelectedKeys,
       docs,
       html,
       onSelect
