@@ -66,7 +66,6 @@
       v-model:visible="visible"
       :confirm-loading="confirmLoading"
       @ok="handleOk"
-      :isAdd="isAdd"
   >
     <a-form :model="ebook" :label-col="{span: 6}" :wrapper-col="{ span: 18}">
       <a-form-item label="封面">
@@ -156,6 +155,7 @@ export default defineComponent({
      * 编辑
      */
     const edit = (record: any) => {
+      isAdd.value = false;
       visible.value = true;
       // 通过Tool来复制一个新对象不让他影响列表数据
       ebook.value = Tool.copy(record);
@@ -363,7 +363,6 @@ export default defineComponent({
       ebook,
       visible,
       confirmLoading,
-      isAdd,
 
       edit,
       add,

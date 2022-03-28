@@ -10,6 +10,7 @@ import com.yum.wiki.request.UserSaveReq;
 import com.yum.wiki.request.UserUpdateReq;
 import com.yum.wiki.result.PageRes;
 import com.yum.wiki.result.UserQueryRes;
+import com.yum.wiki.service.exception.LoginNameEqualsException;
 import com.yum.wiki.utils.CopyUtil;
 import com.yum.wiki.utils.SnowFlakeUtil;
 import org.slf4j.Logger;
@@ -64,14 +65,23 @@ public class UserService {
      * 修改知识库
      */
     public void update(UserUpdateReq req) {
-        User user = CopyUtil.copy(req,User.class);
-        userMapper.updateByPrimaryKey(user);
+        if (!ObjectUtils.isEmpty(req.getId())) {
+            User user = CopyUtil.copy(req,User.class);
+            user.setLoginName(null);
+            // updateByPrimaryKeySelective如果有字段是空就不会更新空的字段
+            userMapper.updateByPrimaryKeySelective(user);
+        }
     }
 
     /**
      * 新增知识库
      */
     public void save(UserSaveReq req) {
+        // 判断用户名是否已存在
+        if(!ObjectUtils.isEmpty(SelectByLoginName(req.getLoginName()))) {
+            // 已存在则不允许添加用户
+            throw new LoginNameEqualsException("用户名已存在！");
+        };
         User user = CopyUtil.copy(req,User.class);
         user.setId(snowFlakeUtil.nextId());
         userMapper.insert(user);
@@ -83,5 +93,22 @@ public class UserService {
      */
     public void delete(Long id) {
         userMapper.deleteByPrimaryKey(id);
+    }
+
+
+    /**
+     * 根据用户名查询用户
+     *
+     * @param loginName
+     * @return
+     */
+    public User SelectByLoginName(String loginName) {
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andLoginNameEqualTo(loginName);
+        List<User> userList = userMapper.selectByExample(userExample);
+        if(userList.isEmpty()) {
+            return null;
+        }
+        return userList.get(0);
     }
 }

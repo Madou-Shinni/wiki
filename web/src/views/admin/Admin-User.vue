@@ -50,11 +50,6 @@
                 删除
               </a-button>
             </a-popconfirm>
-            <router-link :to="'/admin/doc?userId=' + record.id">
-              <a-button type="primary">
-                文档管理
-              </a-button>
-            </router-link>
           </a-space>
         </template>
       </a-table>
@@ -66,11 +61,11 @@
       v-model:visible="visible"
       :confirm-loading="confirmLoading"
       @ok="handleOk"
-      :isAdd="isAdd"
   >
     <a-form :model="user" :label-col="{span: 6}" :wrapper-col="{ span: 18}">
       <a-form-item label="用户名">
-        <a-input v-model:value="user.loginName"/>
+        <!--!!：绕过类型检查-->
+        <a-input v-model:value="user.loginName" :disabled="!!user.id"/>
       </a-form-item>
       <a-form-item label="昵称">
         <a-input v-model:value="user.name"/>
@@ -135,6 +130,7 @@ export default defineComponent({
      * 编辑
      */
     const edit = (record: any) => {
+      isAdd.value = false;
       visible.value = true;
       // 通过Tool来复制一个新对象不让他影响列表数据
       user.value = Tool.copy(record);
@@ -300,7 +296,6 @@ export default defineComponent({
       user,
       visible,
       confirmLoading,
-      isAdd,
 
       edit,
       add,
