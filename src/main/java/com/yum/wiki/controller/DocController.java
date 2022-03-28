@@ -63,7 +63,7 @@ public class DocController {
      * @return
      */
     @PutMapping("/update")
-    public CommonResult update(@RequestBody DocUpdateReq req) {
+    public CommonResult update(@Validated @RequestBody DocUpdateReq req) {
         docService.update(req);
         CommonResult result = new CommonResult<>();
         return result;

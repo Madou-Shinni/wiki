@@ -145,8 +145,10 @@ export default defineComponent({
     const treeSelectData = ref();// 1.因为树型选择节点的的组件会随当前编辑的节点数据变化
     treeSelectData.value = []; // 2.所以定义了一个新变量来增加根节点选项
     const doc = ref();
-    doc.value = {};
-    const isAdd = ref<boolean>(false);
+    doc.value = {
+      ebookId: route.query.ebookId
+    };
+    const isAdd = ref<boolean>(true);
 
     /**
      * 富文本预览
@@ -224,6 +226,7 @@ export default defineComponent({
      * 编辑
      */
     const edit = (record: any) => {
+      isAdd.value = false;
       // 清空富文本框的内容
       editor.txt.html("");
       // 通过Tool来复制一个新对象不让他影响列表数据
@@ -242,9 +245,6 @@ export default defineComponent({
     const add = () => {
       // 清空富文本框的内容
       editor.txt.html("");
-      doc.value = {
-        ebookId: route.query.ebookId
-      };
       isAdd.value = true;
 
       treeSelectData.value = Tool.copy(docs.value);
@@ -293,6 +293,8 @@ export default defineComponent({
             doc.value = {};
             // 重新加载列表数据
             handleQuery()
+          }else {
+            message.error(data.message);
           }
         })
       } else {
@@ -303,6 +305,8 @@ export default defineComponent({
             message.success("修改成功！");
             // 重新加载列表数据
             handleQuery()
+          }else {
+            message.error(data.message);
           }
         })
       }
