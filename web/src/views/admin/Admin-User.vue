@@ -37,6 +37,9 @@
         <!--record代表一整行的数据,传递给edit方法-->
         <template v-slot:action="{text,record}">
           <a-space size="small">
+            <a-button type="primary" @click="resetPassword(record)">
+              重置密码
+            </a-button>
             <a-button type="primary" @click="edit(record)">
               编辑
             </a-button>
@@ -71,6 +74,18 @@
         <a-input v-model:value="user.name"/>
       </a-form-item>
       <a-form-item label="密码" v-show="!user.id">
+        <a-input v-model:value="user.password"/>
+      </a-form-item>
+    </a-form>
+  </a-modal>
+  <a-modal
+      title="重置密码"
+      v-model:visible="resetVisible"
+      :confirm-loading="resetConfirmLoading"
+      @ok="handleResetOk"
+  >
+    <a-form :model="user" :label-col="{span: 6}" :wrapper-col="{ span: 18}">
+      <a-form-item label="新密码">
         <a-input v-model:value="user.password"/>
       </a-form-item>
     </a-form>
@@ -279,6 +294,41 @@ export default defineComponent({
 
 
     /**
+     * 重置-编辑
+     */
+    const resetPassword = (record: any) => {
+      resetVisible.value = true;
+      // 通过Tool来复制一个新对象不让他影响列表数据
+      user.value = Tool.copy(record);
+      user.value.password = null;
+    };
+
+    /**
+     * 重置密码
+     */
+    const resetVisible = ref<boolean>(false);
+    const resetConfirmLoading = ref<boolean>(false);
+    const handleResetOk = () => {
+      resetConfirmLoading.value = true;
+      user.value.password = hexMd5(user.value.password + KEY)
+      axios.put("/user/resetPassword", user.value).then((response) => {
+        const data = response.data;
+        resetConfirmLoading.value = false;
+        if (data.success) {// 保存成功对话框消失，loading效果消失
+          resetVisible.value = false;
+          // 重新加载列表数据
+          handleQuery({// 加载当前页
+            page: pagination.value.current,
+            size: pagination.value.pageSize
+          })
+        }else {
+          message.error(data.message);
+        }
+      })
+    }
+
+
+    /**
      * 初始的时候也查询一次
      */
     onMounted(() => {
@@ -308,8 +358,12 @@ export default defineComponent({
       /*-------------------------*/
       /*----------- 搜索 --------*/
       searchText,
-      onSearch
+      onSearch,
       /*-------------------------*/
+      resetPassword,
+      resetVisible,
+      resetConfirmLoading,
+      handleResetOk
     }
   }
 });

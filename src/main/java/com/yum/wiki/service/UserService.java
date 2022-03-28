@@ -6,6 +6,7 @@ import com.yum.wiki.domain.User;
 import com.yum.wiki.domain.UserExample;
 import com.yum.wiki.mapper.UserMapper;
 import com.yum.wiki.request.UserQueryReq;
+import com.yum.wiki.request.UserResetPasswordReq;
 import com.yum.wiki.request.UserSaveReq;
 import com.yum.wiki.request.UserUpdateReq;
 import com.yum.wiki.result.PageRes;
@@ -62,7 +63,7 @@ public class UserService {
     }
 
     /**
-     * 修改知识库
+     * 修改用户
      */
     public void update(UserUpdateReq req) {
         if (!ObjectUtils.isEmpty(req.getId())) {
@@ -74,7 +75,19 @@ public class UserService {
     }
 
     /**
-     * 新增知识库
+     * 修改用户
+     */
+    public void resetPassword(UserResetPasswordReq req) {
+        if (!ObjectUtils.isEmpty(req.getId())) {
+            User user = CopyUtil.copy(req,User.class);
+            user.setLoginName(null);
+            // updateByPrimaryKeySelective如果有字段是空就不会更新空的字段
+            userMapper.updateByPrimaryKeySelective(user);
+        }
+    }
+
+    /**
+     * 新增用户
      */
     public void save(UserSaveReq req) {
         // 判断用户名是否已存在
@@ -88,7 +101,7 @@ public class UserService {
     }
 
     /**
-     * 根据ID删除知识库
+     * 根据ID删除用户
      * @param id
      */
     public void delete(Long id) {

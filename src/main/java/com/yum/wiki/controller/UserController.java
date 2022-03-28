@@ -1,6 +1,7 @@
 package com.yum.wiki.controller;
 
 import com.yum.wiki.request.UserQueryReq;
+import com.yum.wiki.request.UserResetPasswordReq;
 import com.yum.wiki.request.UserSaveReq;
 import com.yum.wiki.request.UserUpdateReq;
 import com.yum.wiki.result.CommonResult;
@@ -51,6 +52,19 @@ public class UserController {
     public CommonResult update(@Validated @RequestBody UserUpdateReq req) {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));// 加密
         userService.update(req);
+        CommonResult result = new CommonResult<>();
+        return result;
+    }
+
+    /**
+     * 重置密码
+     * @param req
+     * @return
+     */
+    @PutMapping("/resetPassword")
+    public CommonResult resetPassword(@Validated @RequestBody UserResetPasswordReq req) {
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));// 加密
+        userService.resetPassword(req);
         CommonResult result = new CommonResult<>();
         return result;
     }
