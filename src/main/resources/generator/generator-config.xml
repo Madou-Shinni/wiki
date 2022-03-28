@@ -154,6 +154,8 @@
         <!--文档-->
         <!--<table tableName="doc" />-->
         <!--文档内容-->
-        <table tableName="content" />
+        <!--<table tableName="content" />-->
+        <!--用户表-->
+        <table tableName="user" />
     </context>
 </generatorConfiguration>
