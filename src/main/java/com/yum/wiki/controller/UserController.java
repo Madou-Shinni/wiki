@@ -8,6 +8,7 @@ import com.yum.wiki.result.PageRes;
 import com.yum.wiki.result.UserQueryRes;
 import com.yum.wiki.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.DigestUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +49,7 @@ public class UserController {
      */
     @PutMapping("/update")
     public CommonResult update(@Validated @RequestBody UserUpdateReq req) {
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));// 加密
         userService.update(req);
         CommonResult result = new CommonResult<>();
         return result;
@@ -60,6 +62,7 @@ public class UserController {
      */
     @PostMapping("/save")
     public CommonResult save(@Validated @RequestBody UserSaveReq req) {
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));// 加密
         userService.save(req);
         CommonResult result = new CommonResult<>();
         return result;

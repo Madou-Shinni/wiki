@@ -83,6 +83,9 @@ import axios from "axios";
 import {message} from "ant-design-vue";
 import {Tool} from "@/util/tool";
 
+declare let  hexMd5: any;
+declare let  KEY: any;
+
 
 export default defineComponent({
   name: 'AdminUser',
@@ -186,7 +189,7 @@ export default defineComponent({
 
     const handleOk = () => {
       confirmLoading.value = true;
-
+      user.value.password = hexMd5(user.value.password + KEY)
       // 判断是否新增
       if (isAdd.value) {
         // 新增

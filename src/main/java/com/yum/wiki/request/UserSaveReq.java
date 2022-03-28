@@ -15,7 +15,7 @@ public class UserSaveReq implements Serializable {
     private String name;
 
     @NotNull(message = "【密码】不能为空")
-    @Length(min = 6,max = 20,message = "【密码】6~20位")
+    @Length(min = 6,max = 32,message = "【密码】6~20位")
     private String password;
 
     private static final long serialVersionUID = 1L;
