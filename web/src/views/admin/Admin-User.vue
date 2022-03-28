@@ -167,7 +167,6 @@ export default defineComponent({
     const handleDelete = (id: number) => {
       axios.delete(`/user/${id}`).then((response) => {
         const data = response.data;
-        console.log(`${id}`)
         if (data.success) {// 保存成功对话框消失，loading效果消失
           // 重新加载列表数据
           handleQuery({// 加载当前页

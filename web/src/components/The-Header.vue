@@ -46,10 +46,16 @@
 
 <script lang="ts">
 import {defineComponent, ref} from 'vue';
+import axios from "axios";
+import {message} from "ant-design-vue";
+
+declare let  hexMd5: any;
+declare let  KEY: any;
 
 export default defineComponent({
   name: "The-Header",
   setup() {
+
 
     const loginConfirmLoading = ref<boolean>(false);
     const loginVisible = ref<boolean>(false);
@@ -67,7 +73,19 @@ export default defineComponent({
 
     const login = () => {
       loginConfirmLoading.value = true;
-      console.log("开始登录");
+      loginUser.value.password = hexMd5(loginUser.value.password + KEY)
+      axios.post(`/user/login`, loginUser.value).then((response) => {
+        loginConfirmLoading.value = false;
+        const data = response.data;
+        if (data.success) {// 保存成功对话框消失，loading效果消失
+          loginVisible.value = false;
+          // 重新加载列表数据
+          message.success("登录成功!")
+        }else {
+          loginUser.value.password = "";
+          message.error(data.message)
+        }
+      })
     };
 
     return {
@@ -83,7 +101,7 @@ export default defineComponent({
 
 <style scoped>
 
-.loginMenu {
+.header .loginMenu {
   float: right;
   color: white;
 }
