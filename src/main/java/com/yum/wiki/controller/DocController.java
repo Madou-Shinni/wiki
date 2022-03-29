@@ -94,11 +94,28 @@ public class DocController {
         return result;
     }
 
+    /**
+     * 根据文档id查询文档内容
+     *
+     * @param id
+     * @return
+     */
     @GetMapping("/findContent/{id}")
     public CommonResult findContent(@PathVariable Long id) {
         String content = docService.findContent(id);
         CommonResult<String> result = new CommonResult<>();
         result.setData(content);
+        return result;
+    }
+
+    /**
+     * 点赞
+     * @return
+     */
+    @GetMapping("/vote/{id}")
+    public CommonResult vite(@PathVariable Long id) {
+        CommonResult result = new CommonResult();
+        docService.vite(id);
         return result;
     }
 }

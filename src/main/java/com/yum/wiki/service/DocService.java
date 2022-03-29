@@ -197,4 +197,12 @@ public class DocService {
         }
         return content.getContent();
     }
+
+    /**
+     * 点赞
+     * @return
+     */
+    public void vite(Long id) {
+       docMapperCust.increaseViteCount(id);
+    }
 }

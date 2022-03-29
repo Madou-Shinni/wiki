@@ -18,11 +18,16 @@
             <h2> {{ doc.name }}</h2>
             <div>
               <span>阅读数：{{ doc.viewCount }}</span> &nbsp; &nbsp;
-              <span>阅读数：{{ doc.voteCount }}</span>
+              <span>点赞数：{{ doc.voteCount }}</span>
             </div>
           </div>
           <a-divider style="height: 2px; background-color: #9999cc" />
           <div class="wangEditor" :innerHTML="html"></div>
+          <div class="voteDiv">
+            <a-button type="primary" shape="round" size="large" @click="vote">
+              <template #icon><LikeOutlined /> &nbsp;点赞：{{ doc.voteCount }} </template>
+            </a-button>
+          </div>
         </a-col>
       </a-row>
     </a-layout-content>
@@ -81,6 +86,11 @@
   margin: 20px 10px !important;
   font-size: 16px !important;
   font-weight: 600;
+}
+
+.voteDiv {
+  padding: 15px;
+  text-align: center;
 }
 </style>
 
@@ -161,6 +171,20 @@ export default defineComponent({
     }
 
     /**
+     * 点赞
+     */
+    const vote = () => {
+      axios.get(`/doc/vote/${doc.value.id}`).then((response)=>{
+        const data =  response.data;
+        if(data.success) {
+          doc.value.voteCount++;
+        } else {
+          message.error(data.message);
+        }
+      });
+    };
+
+    /**
      * 初始的时候也查询一次
      */
     onMounted(() => {
@@ -173,7 +197,8 @@ export default defineComponent({
       docs,
       html,
       onSelect,
-      doc
+      doc,
+      vote
     }
   }
 });

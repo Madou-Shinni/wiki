@@ -9,4 +9,10 @@ public interface DocMapperCust {
      * @param id
      */
     void increaseViewCount(@Param("id") Long id);
+
+    /**
+     * 点赞
+     * @return
+     */
+    void increaseViteCount(@Param("id") Long id);
 }
