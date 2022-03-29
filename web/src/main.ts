@@ -7,6 +7,7 @@ import 'ant-design-vue/dist/antd.css';
 // 导入所有图标库
 import * as Icons from '@ant-design/icons-vue'
 import axios from 'axios'
+import {Tool} from "@/util/tool";
 
 axios.defaults.baseURL = process.env.VUE_APP_SERVER
 /**
@@ -14,10 +15,17 @@ axios.defaults.baseURL = process.env.VUE_APP_SERVER
  */
 // http request 拦截器
 axios.interceptors.request.use(
-    config => {
-        console.log('请求参数：',config)
-        return config
-    },error => {
+    (config ) => {
+    const token = store.state.user.token;
+    if(Tool.isNotEmpty(token)) {
+        // 请求头增加token
+        config.headers = {
+            "content-type": "application/json",
+            token
+        }
+    }
+    return config
+},error => {
         return Promise.reject(error)
     })
 // http response 拦截器
