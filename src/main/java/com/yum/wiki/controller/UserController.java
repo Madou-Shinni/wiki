@@ -122,4 +122,17 @@ public class UserController {
         return result;
     }
 
+    /**
+     * 登出
+     * @param token
+     * @return
+     */
+    @GetMapping("/logout/{token}")
+    public CommonResult logout(@PathVariable String token) {
+        CommonResult result = new CommonResult<>();
+        redisTemplate.delete(token);
+        LOG.info("从redis中删除token：{}",token);
+        return result;
+    }
+
 }

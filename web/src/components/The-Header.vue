@@ -21,10 +21,22 @@
       <a-menu-item key="5">
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>
-      <a class="loginMenu" v-if="user.id"  @click="showLoginModal">
-        <span v-show="user.id">您好：{{ user.name }}</span>
+      <a class="loginMenu" v-if="user.id">
+        <span>您好：{{ user.name }}</span>
       </a>
-      <a class="loginMenu" v-if="!user.id"  @click="showLoginModal">
+      <a class="logoutMenu" v-if="user.id">
+        <a-popconfirm
+            title="确认退出登录?"
+            ok-text="是"
+            cancel-text="否"
+            @confirm="logout"
+        >
+          <span>
+            退出登录
+          </span>
+        </a-popconfirm>
+      </a>
+      <a v-else class="loginMenu" @click="showLoginModal">
         <span>登录</span>
       </a>
     </a-menu>
@@ -37,7 +49,7 @@
     >
       <a-form :model="loginUser" :label-col="{span: 6}" :wrapper-col="{ span: 18}">
         <a-form-item label="用户名">
-          <a-input v-model:value="loginUser.loginName" />
+          <a-input v-model:value="loginUser.loginName"/>
         </a-form-item>
         <a-form-item label="密码">
           <a-input type="password" v-model:value="loginUser.password"/>
@@ -53,8 +65,8 @@ import axios from "axios";
 import {message} from "ant-design-vue";
 import store from "@/store";
 
-declare let  hexMd5: any;
-declare let  KEY: any;
+declare let hexMd5: any;
+declare let KEY: any;
 
 export default defineComponent({
   name: "The-Header",
@@ -70,8 +82,8 @@ export default defineComponent({
     /**
      * 登录后保存的
      */
-    // const user = ref();
-    const user = computed(() => store.state.user )
+        // const user = ref();
+    const user = computed(() => store.state.user)
     //user.value = {}; // 初始化空对象避免空指针异常
 
     /**
@@ -82,6 +94,9 @@ export default defineComponent({
       password: "123456"
     })
 
+    /**
+     * 登录
+     */
     const login = () => {
       loginConfirmLoading.value = true;
       loginUser.value.password = hexMd5(loginUser.value.password + KEY)
@@ -100,13 +115,30 @@ export default defineComponent({
       })
     };
 
+    /**
+     * 退出
+     */
+    const logout = () => {
+      axios.get(`/user/logout/${user.value.token}`).then((response) => {
+        const data = response.data;
+        if (data.success) {// 保存成功对话框消失，loading效果消失
+          message.success("退出登录成功!");
+          //user.value = data.data;
+          store.commit("setUser", {});
+        } else {
+          message.error(data.message);
+        }
+      })
+    };
+
     return {
       showLoginModal,
       loginVisible,
       loginConfirmLoading,
       loginUser,
       login,
-      user
+      user,
+      logout
     }
   }
 })
@@ -117,9 +149,28 @@ export default defineComponent({
 .header {
   position: relative;
 }
+
 .loginMenu {
   position: absolute;
-  right: 50px;
+  right: 200px;
+  color: white;
+}
+
+.loginMenu span {
+  max-width: 150px;
+  /* 变成块级元素*/
+  display: block;
+  /* 文本不换行 */
+  white-space: nowrap;
+  /* 越界隐藏 */
+  overflow: hidden;
+  /* 文本溢出显示省略号 */
+  text-overflow: ellipsis;
+}
+
+.logoutMenu {
+  position: absolute;
+  right: 100px;
   color: white;
 }
 
