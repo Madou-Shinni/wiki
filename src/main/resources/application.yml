@@ -19,9 +19,9 @@ spring:
 test:
   hello: Hello
 # 日志级别
-#logging:
-#  level:
-#    root: debug
+logging:
+  level:
+    root: info
 mybatis:
   # mapper.xml路径
   mapper-locations: classpath*:mapper/**/*.xml
