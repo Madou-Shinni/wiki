@@ -51,13 +51,14 @@
 import {defineComponent, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
+import store from "@/store";
 
 declare let  hexMd5: any;
 declare let  KEY: any;
 
 export default defineComponent({
   name: "The-Header",
-  setup() {
+  setup: function () {
 
 
     const loginConfirmLoading = ref<boolean>(false);
@@ -88,11 +89,12 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {// 保存成功对话框消失，loading效果消失
           loginVisible.value = false;
-          message.success("登录成功!")
+          message.success("登录成功!");
           user.value = data.data;
-        }else {
+          store.commit("setUser", user.value);
+        } else {
           loginUser.value.password = "";
-          message.error(data.message)
+          message.error(data.message);
         }
       })
     };
