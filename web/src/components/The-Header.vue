@@ -21,9 +21,12 @@
       <a-menu-item key="5">
         <router-link to="/about">关于我们</router-link>
       </a-menu-item>
-      <a-menu-item key="6" class="loginMenu" @click="showLoginModal">
+      <a class="loginMenu" v-if="user.id"  @click="showLoginModal">
+        <span v-show="user.id">您好：{{ user.name }}</span>
+      </a>
+      <a class="loginMenu" v-if="!user.id"  @click="showLoginModal">
         <span>登录</span>
-      </a-menu-item>
+      </a>
     </a-menu>
 
     <a-modal
@@ -64,6 +67,12 @@ export default defineComponent({
     }
 
     /**
+     * 登录后保存的
+     */
+    const user = ref();
+    user.value = {}; // 初始化空对象避免空指针异常
+
+    /**
      * 登录变量定义
      */
     const loginUser = ref({
@@ -79,8 +88,8 @@ export default defineComponent({
         const data = response.data;
         if (data.success) {// 保存成功对话框消失，loading效果消失
           loginVisible.value = false;
-          // 重新加载列表数据
           message.success("登录成功!")
+          user.value = data.data;
         }else {
           loginUser.value.password = "";
           message.error(data.message)
@@ -93,7 +102,8 @@ export default defineComponent({
       loginVisible,
       loginConfirmLoading,
       loginUser,
-      login
+      login,
+      user
     }
   }
 })
@@ -101,8 +111,12 @@ export default defineComponent({
 
 <style scoped>
 
-.header .loginMenu {
-  float: right;
+.header {
+  position: relative;
+}
+.loginMenu {
+  position: absolute;
+  right: 50px;
   color: white;
 }
 

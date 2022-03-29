@@ -203,9 +203,9 @@ export default defineComponent({
 
     const handleOk = () => {
       confirmLoading.value = true;
-      user.value.password = hexMd5(user.value.password + KEY)
       // 判断是否新增
       if (isAdd.value) {
+        user.value.password = hexMd5(user.value.password + KEY)
         // 新增
         axios.post("/user/save", user.value).then((response) => {
           const data = response.data;
