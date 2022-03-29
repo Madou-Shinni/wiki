@@ -1,6 +1,6 @@
 # Get请求
-GET http://localhost:8081/hello
-#Accept: application/json
+GET http://localhost:8081/test/get/706131432870772736
+Accept: application/json
 
 # 结果验证脚本
 > {%

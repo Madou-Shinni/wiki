@@ -2,12 +2,12 @@ package com.yum.wiki.controller;
 
 import com.yum.wiki.domain.Test;
 import com.yum.wiki.service.TestService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,6 +17,9 @@ import java.util.List;
  */
 @RestController
 public class TestController {
+    private static final Logger LOG = LoggerFactory.getLogger(TestController.class);
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 优先读取配置项，配置项没有读取:后面的默认值
@@ -40,5 +43,12 @@ public class TestController {
     @GetMapping("/test/list")
     public List<Test> list() {
         return testService.list();
+    }
+
+    @GetMapping("/test/get/{token}")
+    public Object get(@PathVariable Long token) {
+        Object res = redisTemplate.opsForValue().get(token);
+        LOG.info("key：{}，value：{}",token,res);
+        return res;
     }
 }
