@@ -8,6 +8,12 @@ spring:
     url: jdbc:mysql://localhost:3306/wiki?characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: wiki
     password: 123456
+  # redis
+  redis:
+    host: 112.124.14.11
+    port: 6379
+    password: XW123456789a
+
 
 # 自定义配置
 test:

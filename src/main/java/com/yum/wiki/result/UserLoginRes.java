@@ -9,12 +9,22 @@ public class UserLoginRes implements Serializable {
 
     private String name;
 
+    private String token;
+
     private static final long serialVersionUID = 1L;
 
     public UserLoginRes(Long id, String loginName, String name, String password) {
         this.id = id;
         this.loginName = loginName;
         this.name = name;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public UserLoginRes() {
