@@ -54,6 +54,8 @@ public class ControllerExceptionHandler {
             result.setMessage(e.getMessage());
         }else if(e instanceof LoginException) {
             result.setMessage(e.getMessage());
+        }else if(e instanceof RepeatIncreaseVoteException) {
+            result.setMessage(e.getMessage());
         }
         return result;
     }

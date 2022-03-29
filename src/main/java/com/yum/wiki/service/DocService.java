@@ -16,7 +16,10 @@ import com.yum.wiki.result.PageRes;
 import com.yum.wiki.result.tree.DocQueryResTree;
 import com.yum.wiki.service.exception.ContentNullException;
 import com.yum.wiki.service.exception.DocParentEqualsIdAndChildrenException;
+import com.yum.wiki.service.exception.RepeatIncreaseVoteException;
 import com.yum.wiki.utils.CopyUtil;
+import com.yum.wiki.utils.RedisUtil;
+import com.yum.wiki.utils.RequestContextUtil;
 import com.yum.wiki.utils.SnowFlakeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +46,8 @@ public class DocService {
     private ContentMapper contentMapper;
     @Autowired
     private SnowFlakeUtil snowFlakeUtil;
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 数据量过大每次执行sql都会影响性能
@@ -203,6 +208,12 @@ public class DocService {
      * @return
      */
     public void vite(Long id) {
-       docMapperCust.increaseViteCount(id);
+        //docMapperCust.increaseVoteCount(id);
+        // 远程ip+doc.id作为key,24小时内不能重复
+        String key = RequestContextUtil.getRemoteAddr();
+        if(redisUtil.validateRequest("DOC_VOTE" + id + "_" + key,3600*24))
+            docMapperCust.increaseVoteCount(id);
+        else
+            throw new RepeatIncreaseVoteException("您已经点赞过了！");
     }
 }

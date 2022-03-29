@@ -14,5 +14,5 @@ public interface DocMapperCust {
      * 点赞
      * @return
      */
-    void increaseViteCount(@Param("id") Long id);
+    void increaseVoteCount(@Param("id") Long id);
 }
