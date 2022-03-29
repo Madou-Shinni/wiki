@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue';
+import {computed, defineComponent, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
 import store from "@/store";
@@ -70,8 +70,9 @@ export default defineComponent({
     /**
      * 登录后保存的
      */
-    const user = ref();
-    user.value = {}; // 初始化空对象避免空指针异常
+    // const user = ref();
+    const user = computed(() => store.state.user )
+    //user.value = {}; // 初始化空对象避免空指针异常
 
     /**
      * 登录变量定义
@@ -90,8 +91,8 @@ export default defineComponent({
         if (data.success) {// 保存成功对话框消失，loading效果消失
           loginVisible.value = false;
           message.success("登录成功!");
-          user.value = data.data;
-          store.commit("setUser", user.value);
+          //user.value = data.data;
+          store.commit("setUser", data.data);
         } else {
           loginUser.value.password = "";
           message.error(data.message);
