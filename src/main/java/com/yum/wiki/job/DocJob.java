@@ -23,8 +23,10 @@ public class DocJob {
      */
     @Scheduled(cron = "5/30 * * * * ? ")
     public void cron() {
-        LOG.info("定时任务执行：{}",System.currentTimeMillis());
+        LOG.info("更新知识库的数据开始");
+        long startTime = System.currentTimeMillis();
         docService.updateEbookInfo();
+        LOG.info("更新知识库数据结束，耗时：{} 毫秒",System.currentTimeMillis()  - startTime);
     }
 
 }
