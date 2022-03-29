@@ -216,4 +216,11 @@ public class DocService {
         else
             throw new RepeatIncreaseVoteException("您已经点赞过了！");
     }
+
+    /**
+     * 根据知识库分组统计文档(doc)数据，并更新到对应的知识库(ebook)中
+     */
+    public void updateEbookInfo() {
+        docMapperCust.updateEbookInfo();
+    }
 }
