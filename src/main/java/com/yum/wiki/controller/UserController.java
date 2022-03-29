@@ -59,7 +59,6 @@ public class UserController {
      */
     @PutMapping("/update")
     public CommonResult update(@Validated @RequestBody UserUpdateReq req) {
-        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));// 加密
         userService.update(req);
         CommonResult result = new CommonResult<>();
         return result;

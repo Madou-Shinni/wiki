@@ -68,6 +68,7 @@ public class UserService {
         if (!ObjectUtils.isEmpty(req.getId())) {
             User user = CopyUtil.copy(req,User.class);
             user.setLoginName(null);
+            user.setPassword(null);
             // updateByPrimaryKeySelective如果有字段是空就不会更新空的字段
             userMapper.updateByPrimaryKeySelective(user);
         }
