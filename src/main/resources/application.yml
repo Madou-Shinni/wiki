@@ -24,6 +24,6 @@ test:
 #    root: debug
 mybatis:
   # mapper.xml路径
-  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  mapper-locations: classpath*:mapper/**/*.xml
   # 别名映射包路径
   type-aliases-package: com.yum.wiki.domain

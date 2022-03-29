@@ -7,6 +7,7 @@ import com.yum.wiki.domain.Doc;
 import com.yum.wiki.domain.DocExample;
 import com.yum.wiki.mapper.ContentMapper;
 import com.yum.wiki.mapper.DocMapper;
+import com.yum.wiki.mapper.DocMapperCust;
 import com.yum.wiki.request.DocQueryReq;
 import com.yum.wiki.request.DocSaveReq;
 import com.yum.wiki.request.DocUpdateReq;
@@ -36,6 +37,8 @@ public class DocService {
 
     @Autowired
     private DocMapper docMapper;
+    @Autowired
+    private DocMapperCust docMapperCust;
     @Autowired
     private ContentMapper contentMapper;
     @Autowired
@@ -154,6 +157,8 @@ public class DocService {
         Doc doc = CopyUtil.copy(req,Doc.class);
         Content content = CopyUtil.copy(req,Content.class);
         doc.setId(snowFlakeUtil.nextId());
+        doc.setViewCount(0);
+        doc.setViewCount(0);
         content.setId(doc.getId());
         docMapper.insert(doc);
         contentMapper.insert(content);
@@ -185,6 +190,8 @@ public class DocService {
      */
     public String findContent(Long id) {
         Content content = contentMapper.selectByPrimaryKey(id);
+        // 文档阅读数+1
+        docMapperCust.increaseViewCount(id);
         if(ObjectUtils.isEmpty(content)) {
             throw new ContentNullException("id【"+id+"】文档内容为空！");
         }
