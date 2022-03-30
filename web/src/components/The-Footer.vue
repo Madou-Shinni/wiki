@@ -1,6 +1,6 @@
 <template>
   <a-layout-footer style="text-align: center">
-    Just Create ©2022 Created by Freedom lovers
+    小天才知识库 | ©2022-present | Created by 小天才
   </a-layout-footer>
 </template>
 

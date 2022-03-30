@@ -7,8 +7,8 @@
           @click="handleClick"
       >
         <a-menu-item key="welcome">
-            <MailOutlined/>
-            <span>欢迎</span>
+          <MailOutlined/>
+          <span>欢迎</span>
         </a-menu-item>
         <a-sub-menu v-for="item in level1" :key="item.id">
           <template v-slot:title>
@@ -25,11 +25,12 @@
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
       <div class="welcome" v-show="isShowWelcome">
-        <h1>欢迎</h1>
+        <TheWelcome/>
       </div>
       <!--列表数据-->
       <!--:grid="{gutter:20,column: 3}" 一行三列每一列间距20px-->
-      <a-list v-show="!isShowWelcome" item-layout="vertical" size="large" :grid="{gutter:20,column: 3}" :data-source="ebooks">
+      <a-list v-show="!isShowWelcome" item-layout="vertical" size="large" :grid="{gutter:20,column: 3}"
+              :data-source="ebooks">
         <template #renderItem="{ item }">
           <a-list-item key="item.name">
             <template #actions>
@@ -55,7 +56,7 @@
               </template>
               <!--封面-->
               <template #avatar>
-                <a-avatar style="width: auto" :src="item.cover" />
+                <a-avatar style="width: auto" :src="item.cover"/>
               </template>
             </a-list-item-meta>
             {{ item.content }}
@@ -70,9 +71,13 @@
 import {defineComponent, onMounted, ref} from 'vue';
 import axios from "axios";
 import {message} from "ant-design-vue";
+import TheWelcome from "@/components/The-Welcome.vue";
 
 export default defineComponent({
   name: 'Home',
+  components: {
+    TheWelcome
+  },
   // vue3新函数，组件初始会执行
   setup() {
     // ref: 响应式数据(获取和赋值都需要.value)
@@ -95,7 +100,7 @@ export default defineComponent({
     /**
      * 查询知识库
      */
-    const handleQueryEbook = ()=>{
+    const handleQueryEbook = () => {
       axios.get("/ebook/list", {
         params: {
           page: 1,
@@ -113,9 +118,9 @@ export default defineComponent({
     // 次级分类id
     let categoryId2 = 0;
     const handleClick = (value: any) => {
-      if(value.key === 'welcome') {
+      if (value.key === 'welcome') {
         isShowWelcome.value = true;
-      }else {
+      } else {
         categoryId2 = value.key;
         isShowWelcome.value = false;
         handleQueryEbook();
