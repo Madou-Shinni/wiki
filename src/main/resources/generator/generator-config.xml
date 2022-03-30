@@ -147,7 +147,7 @@
                enableDeleteByExample="false"
                enableSelectByExample="false"
                selectByExampleQueryId="false" />-->
-        <!--电子书表-->
+        <!--知识库表-->
         <!--<table tableName="ebook" />-->
         <!--分类-->
         <!--<table tableName="category" />-->
@@ -156,6 +156,8 @@
         <!--文档内容-->
         <!--<table tableName="content" />-->
         <!--用户表-->
-        <table tableName="user" />
+        <!--<table tableName="user" />-->
+        <!--知识库快照表-->
+        <table tableName="ebook_snapshot" />
     </context>
 </generatorConfiguration>
