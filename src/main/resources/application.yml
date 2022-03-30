@@ -13,6 +13,12 @@ spring:
     host: 112.124.14.11
     port: 6379
     password: XW123456789a
+  # rabbit
+  rabbitmq:
+    host: 112.124.14.11
+    port: 5672
+    username: admin
+    password: admin
 
 
 # 自定义配置

@@ -2,6 +2,7 @@ package com.yum.wiki.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.yum.wiki.config.RabbitmqConfig;
 import com.yum.wiki.domain.Content;
 import com.yum.wiki.domain.Doc;
 import com.yum.wiki.domain.DocExample;
@@ -24,6 +25,7 @@ import com.yum.wiki.utils.SnowFlakeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,8 @@ public class DocService {
     private RedisUtil redisUtil;
     @Autowired
     private WsService wsService;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     /**
      * 数据量过大每次执行sql都会影响性能
@@ -216,7 +220,7 @@ public class DocService {
         //docMapperCust.increaseVoteCount(id);
         // 远程ip+doc.id作为key,24小时内不能重复
         String key = RequestContextUtil.getRemoteAddr();
-        if(redisUtil.validateRequest("DOC_VOTE" + id + "_" + key,3600*24))
+        if(redisUtil.validateRequest("DOC_VOTE" + id + "_" + key,5000))
             docMapperCust.increaseVoteCount(id);
         else
             throw new RepeatIncreaseVoteException("您已经点赞过了！");
@@ -224,7 +228,8 @@ public class DocService {
         // 推送消息
         Doc docDb = docMapper.selectByPrimaryKey(id);
         String logId = MDC.get("LOG_ID");
-        wsService.sendInfo("【"+ docDb.getName() +"】被点赞！",logId);
+        //wsService.sendInfo("【"+ docDb.getName() +"】被点赞！",logId);
+        rabbitTemplate.convertAndSend(RabbitmqConfig.EXCHANGE,"VOTE.MESSAGE","【"+ docDb.getName() +"】被点赞！");
     }
 
 
