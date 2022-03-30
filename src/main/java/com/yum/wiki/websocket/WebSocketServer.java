@@ -67,7 +67,7 @@ public class WebSocketServer {
      * 群发消息
      */
     public void sendInfo(String message) {
-        map.entrySet().stream().forEach(token->{
+        for (String token: map.keySet()){
             Session session = map.get(token);
             try {
                 session.getBasicRemote().sendText(message);
@@ -75,6 +75,6 @@ public class WebSocketServer {
                 LOG.error("推送消息失败：{}，内容：{}",token,message);
             }
             LOG.info("推送消息：{}，内容：{}",token,message);
-        });
+        }
     }
 }

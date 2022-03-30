@@ -21,7 +21,6 @@ import com.yum.wiki.utils.CopyUtil;
 import com.yum.wiki.utils.RedisUtil;
 import com.yum.wiki.utils.RequestContextUtil;
 import com.yum.wiki.utils.SnowFlakeUtil;
-import com.yum.wiki.websocket.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,7 @@ public class DocService {
     @Autowired
     private RedisUtil redisUtil;
     @Autowired
-    private WebSocketServer webSocketServer;
+    private WsService wsService;
 
     /**
      * 数据量过大每次执行sql都会影响性能
@@ -221,8 +220,9 @@ public class DocService {
 
         // 推送消息
         Doc docDb = docMapper.selectByPrimaryKey(id);
-        webSocketServer.sendInfo("【"+ docDb.getName() +"】被点赞！");
+        wsService.sendInfo("【"+ docDb.getName() +"】被点赞！");
     }
+
 
     /**
      * 根据知识库分组统计文档(doc)数据，并更新到对应的知识库(ebook)中
