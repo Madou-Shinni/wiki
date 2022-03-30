@@ -1,8 +1,11 @@
 package com.yum.wiki.service;
 
 import com.yum.wiki.mapper.EbookSnapshotMapperCust;
+import com.yum.wiki.result.StatisticRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author Yum
@@ -15,5 +18,13 @@ public class EbookSnapShotService {
 
     public void genSnapshot() {
         ebookSnapshotMapperCust.genShapshot();
+    }
+
+    /**
+     * 获取首页统计数值
+     * @return
+     */
+    public List<StatisticRes> getStatistic() {
+        return ebookSnapshotMapperCust.getStatistic();
     }
 }

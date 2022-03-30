@@ -25,7 +25,7 @@ public class DocJob {
      * 从5秒开始每35秒的时候触发
      *
      */
-    @Scheduled(cron = "5/30 * * * * ? ")
+    @Scheduled(cron = "5/35 * * * * ? ")
     public void cron() {
         // 增加日志流水号
         MDC.put("LOG_ID", String.valueOf(snowFlakeUtil.nextId()));

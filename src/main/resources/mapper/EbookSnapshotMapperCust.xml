@@ -11,15 +11,28 @@
                            and t2.`date` = curdate());
 
         update ebook_snapshot t1, ebook t2
-        set t1.view_count = t2.view_count,t1.vote_count = t2.view_count
+        set t1.view_count = t2.view_count, t1.vote_count = t2.view_count
         where t1.`date` = curdate() and t1.ebook_id = t2.id;
 
         update ebook_snapshot t1 left join
             (select ebook_id,view_count,vote_count from ebook_snapshot
-            where `date` = date_sub(curdate(),interval 1 day )) t2
+            where `date` = date_sub(curdate(), interval 1 day )) t2
         on t1.ebook_id = t2.ebook_id
-            set t1.view_increase = (t1.view_count - ifnull(t2.view_count,0)),
-                t1.vote_increase = (t1.vote_count - ifnull(t2.vote_count,0))
+            set t1.view_increase = (t1.view_count - ifnull(t2.view_count, 0)),
+                t1.vote_increase = (t1.vote_count - ifnull(t2.vote_count, 0))
         where t1.`date` = curdate();
     </update>
+
+    <!--获取首页统计数值：总阅读数、总点赞数、今日阅读数、今日点赞数、今日预计阅读数、今日预计阅读增长-->
+    <select id="getStatistic" resultType="statisticRes">
+        select t1.`date`             as `date`,
+               sum(t1.vite_count)    as viewCount,
+               sum(t1.vote_count)    as voteCount,
+               sum(t1.view_increase) as viewIncrease,
+               sum(t1.vote_increase) as voteIncreasefrom
+        from ebook_snapshot t1
+        where t1.`date` >= date_sub(curdate(), interval 1 day)
+        group by t1.`date`
+        order by t1.`date` asc
+    </select>
 </mapper>
