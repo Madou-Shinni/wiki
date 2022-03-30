@@ -26,7 +26,7 @@
     <!--获取首页统计数值：总阅读数、总点赞数、今日阅读数、今日点赞数、今日预计阅读数、今日预计阅读增长-->
     <select id="getStatistic" resultType="StatisticRes">
         select t1.`date`             as `date`,
-               sum(t1.vite_count)    as viewCount,
+               sum(t1.view_count)    as viewCount,
                sum(t1.vote_count)    as voteCount,
                sum(t1.view_increase) as viewIncrease,
                sum(t1.vote_increase) as voteIncrease
