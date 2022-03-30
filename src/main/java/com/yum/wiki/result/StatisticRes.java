@@ -9,7 +9,7 @@ import java.util.Date;
  * @author Yum
  * @version 1.0
  */
-@Alias("statisticRes")
+@Alias("StatisticRes")
 public class StatisticRes {
     /**
      * 日期

@@ -24,12 +24,12 @@
     </update>
 
     <!--获取首页统计数值：总阅读数、总点赞数、今日阅读数、今日点赞数、今日预计阅读数、今日预计阅读增长-->
-    <select id="getStatistic" resultType="statisticRes">
+    <select id="getStatistic" resultType="StatisticRes">
         select t1.`date`             as `date`,
                sum(t1.vite_count)    as viewCount,
                sum(t1.vote_count)    as voteCount,
                sum(t1.view_increase) as viewIncrease,
-               sum(t1.vote_increase) as voteIncreasefrom
+               sum(t1.vote_increase) as voteIncrease
         from ebook_snapshot t1
         where t1.`date` >= date_sub(curdate(), interval 1 day)
         group by t1.`date`
