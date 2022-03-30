@@ -23,7 +23,7 @@
           </div>
           <a-divider style="height: 2px; background-color: #9999cc" />
           <div class="wangEditor" :innerHTML="html"></div>
-          <div class="voteDiv">
+          <div class="voteDiv" v-if="doc.id">
             <a-button type="primary" shape="round" size="large" @click="vote">
               <template #icon><LikeOutlined /> &nbsp;点赞：{{ doc.voteCount }} </template>
             </a-button>
