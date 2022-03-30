@@ -249,7 +249,7 @@ export default defineComponent({
 
       treeSelectData.value = Tool.copy(docs.value);
       // 为选择树添加一个无
-      treeSelectData.value.unshift({id: 0,  name: '无'});
+      //treeSelectData.value.unshift({id: 0,  name: '无'});
     };
     /**
      * 删除
@@ -289,8 +289,8 @@ export default defineComponent({
           const data = response.data;
           if (data.success) {// 保存成功对话框消失，loading效果消失
             message.success("保存成功！")
-            isAdd.value = false;
-            doc.value = {};
+            //isAdd.value = false;
+            //doc.value = {};
             // 重新加载列表数据
             handleQuery()
           }else {
@@ -323,11 +323,13 @@ export default defineComponent({
         loading.value = false
         const data = response.data
         if (data.success) {
-          docs.value = data.data;
+          if(data.data.length != 0) {
+            docs.value = data.data;
+            // 父文档下拉框初始化，相当于新增
+            treeSelectData.value = Tool.copy(docs.value);
+          }
           // 修改tableKey使之可以展开
           tableKey.value = Math.random();
-          // 父文档下拉框初始化，相当于新增
-          treeSelectData.value = Tool.copy(docs.value);
           // 添加一个根节点 '无'
           treeSelectData.value.unshift({id: 0, name: '无'})
         } else {
