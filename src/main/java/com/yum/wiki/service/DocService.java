@@ -21,6 +21,7 @@ import com.yum.wiki.utils.CopyUtil;
 import com.yum.wiki.utils.RedisUtil;
 import com.yum.wiki.utils.RequestContextUtil;
 import com.yum.wiki.utils.SnowFlakeUtil;
+import com.yum.wiki.websocket.WebSocketServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,8 @@ public class DocService {
     private SnowFlakeUtil snowFlakeUtil;
     @Autowired
     private RedisUtil redisUtil;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     /**
      * 数据量过大每次执行sql都会影响性能
@@ -215,6 +218,10 @@ public class DocService {
             docMapperCust.increaseVoteCount(id);
         else
             throw new RepeatIncreaseVoteException("您已经点赞过了！");
+
+        // 推送消息
+        Doc docDb = docMapper.selectByPrimaryKey(id);
+        webSocketServer.sendInfo("【"+ docDb.getName() +"】被点赞！");
     }
 
     /**
