@@ -88,6 +88,11 @@
   font-weight: 600;
 }
 
+.wangEditor img {
+  max-width: 100%;
+  height: auto;
+}
+
 .voteDiv {
   padding: 15px;
   text-align: center;

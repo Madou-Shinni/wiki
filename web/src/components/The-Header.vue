@@ -90,8 +90,8 @@ export default defineComponent({
      * 登录变量定义
      */
     const loginUser = ref({
-      loginName: "test",
-      password: "123456"
+      loginName: "",
+      password: ""
     })
 
     /**
