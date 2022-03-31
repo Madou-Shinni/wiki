@@ -7,14 +7,14 @@
             <a-col :span="8">
               <a-statistic title="总阅读量" :value="statistic.viewCount">
                 <template #suffix>
-                  <UserOutlined />
+                  <UserOutlined/>
                 </template>
               </a-statistic>
             </a-col>
             <a-col :span="8">
               <a-statistic title="总点赞量" :value="statistic.voteCount">
                 <template #suffix>
-                  <like-outlined />
+                  <like-outlined/>
                 </template>
               </a-statistic>
             </a-col>
@@ -24,7 +24,7 @@
                            suffix="%"
                            :value-style="{ color: '#cf1322' }">
                 <template #suffix>
-                  <like-outlined />
+                  <like-outlined/>
                 </template>
               </a-statistic>
             </a-col>
@@ -32,7 +32,7 @@
         </a-card>
       </a-col>
     </a-row>
-    <br>
+    <br/>
     <a-row :gutter="16">
       <a-col :span="12">
         <a-card>
@@ -40,14 +40,14 @@
             <a-col :span="12">
               <a-statistic title="今日阅读" :value="statistic.todayViewCount" style="margin-right: 50px">
                 <template #suffix>
-                  <UserOutlined />
+                  <UserOutlined/>
                 </template>
               </a-statistic>
             </a-col>
             <a-col :span="12">
               <a-statistic title="今日点赞" :value="statistic.todayVoteCount">
                 <template #suffix>
-                  <like-outlined />
+                  <like-outlined/>
                 </template>
               </a-statistic>
             </a-col>
@@ -64,7 +64,7 @@
                   :value-style="{ color: '#0000ff' }"
               >
                 <template #suffix>
-                  <UserOutlined />
+                  <UserOutlined/>
                 </template>
               </a-statistic>
             </a-col>
@@ -87,6 +87,12 @@
         </a-card>
       </a-col>
     </a-row>
+    <br/>
+    <a-row>
+      <a-col :span="24">
+        <div id="main" style="width:100%;height:300px;"></div>
+      </a-col>
+    </a-row>
   </div>
 </template>
 
@@ -94,15 +100,17 @@
 import {defineComponent, onMounted, ref} from "vue";
 import axios from "axios";
 
+declare let echarts: any;
+
 export default defineComponent({
   name: "The-Welcome",
   setup() {
     const statistic = ref();
     statistic.value = {};
     const getStatistic = () => {
-      axios.get('/ebookSnapshot/getStatistic').then((response)=>{
+      axios.get('/ebookSnapshot/getStatistic').then((response) => {
         const data = response.data;
-        if(data.success) {
+        if (data.success) {
           const statisticRes = data.data;
           statistic.value.viewCount = statisticRes[1].viewCount;
           statistic.value.voteCount = statisticRes[1].voteCount;
@@ -121,14 +129,38 @@ export default defineComponent({
       });
     };
 
+    /**
+     * 报表Echarts
+     */
+    const testEcharts = () => {
+      const myChart = echarts.init(document.getElementById('main'));
+      myChart.setOption({
+        xAxis: {
+          type: 'category',
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            data: [150, 230, 224, 218, 135, 147, 260],
+            type: 'line'
+          }
+        ]
+      })
+    };
+
 
     onMounted(() => {
-      getStatistic()
+      getStatistic();
+      testEcharts();
     });
 
     return {
       statistic
     }
+
   }
 })
 </script>
