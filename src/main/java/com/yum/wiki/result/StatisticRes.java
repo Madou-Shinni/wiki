@@ -1,6 +1,7 @@
 package com.yum.wiki.result;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.ibatis.type.Alias;
 
 import java.util.Date;
@@ -14,6 +15,7 @@ public class StatisticRes {
     /**
      * 日期
      */
+    @JsonFormat(pattern = "MM-dd",timezone = "GMT+8")
     private Date date;
     /**
      * 阅读总数

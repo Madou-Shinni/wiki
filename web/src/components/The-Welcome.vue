@@ -111,20 +111,23 @@ export default defineComponent({
       axios.get('/ebookSnapshot/getStatistic').then((response) => {
         const data = response.data;
         if (data.success) {
-          const statisticRes = data.data;
-          statistic.value.viewCount = statisticRes[1].viewCount;
-          statistic.value.voteCount = statisticRes[1].voteCount;
-          statistic.value.todayViewCount = statisticRes[1].viewIncrease;
-          statistic.value.todayVoteCount = statisticRes[1].voteIncrease;
+          const data = response.data;
+          if (data.success) {
+            const statisticResp = data.content;
+            statistic.value.viewCount = statisticResp[1].viewCount;
+            statistic.value.voteCount = statisticResp[1].voteCount;
+            statistic.value.todayViewCount = statisticResp[1].viewIncrease;
+            statistic.value.todayVoteCount = statisticResp[1].voteIncrease;
 
-          // 按分钟计算当前时间点，占一天的总百分比
-          const now = new Date();
-          const nowRate = (now.getHours() * 60 + now.getMinutes()) / (60 * 24);
-          // console.log(nowRate)
-          statistic.value.todayViewIncrease = parseInt(String(statisticRes[1].viewIncrease / nowRate));
-          // todayViewIncreaseRate今日预计增长率
-          statistic.value.todayViewIncreaseRate = (statistic.value.todayViewIncrease - statisticRes[0].viewIncrease) / statisticRes[0].viewIncrease * 100;
-          statistic.value.todayViewIncreaseRateAbs = Math.abs(statistic.value.todayViewIncreaseRate);
+            // 按分钟计算当前时间点，占一天的百分比
+            const now = new Date();
+            const nowRate = (now.getHours() * 60 + now.getMinutes()) / (60 * 24);
+            // console.log(nowRate)
+            statistic.value.todayViewIncrease = parseInt(String(statisticResp[1].viewIncrease / nowRate));
+            // todayViewIncreaseRate：今日预计增长率
+            statistic.value.todayViewIncreaseRate = (statistic.value.todayViewIncrease - statisticResp[0].viewIncrease) / statisticResp[0].viewIncrease * 100;
+            statistic.value.todayViewIncreaseRateAbs = Math.abs(statistic.value.todayViewIncreaseRate);
+          }
         }
       });
     };
@@ -132,29 +135,85 @@ export default defineComponent({
     /**
      * 报表Echarts
      */
-    const testEcharts = () => {
+    const init30DayEcharts = (list: any) => {
       const myChart = echarts.init(document.getElementById('main'));
-      myChart.setOption({
+
+      const xAxis = [];
+      const seriesView = [];
+      const seriesVote = [];
+      for (let i = 0; i < list.length; i++) {
+        const record = list[i];
+        xAxis.push(record.date);
+        seriesView.push(record.viewIncrease);
+        seriesVote.push(record.voteIncrease);
+      }
+
+      const option = {
+        title: {
+          text: '30天 趋势图'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['总阅读量', '总点赞量']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {}
+          }
+        },
         xAxis: {
           type: 'category',
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          boundaryGap: false,
+          data: xAxis
         },
         yAxis: {
           type: 'value'
         },
         series: [
           {
-            data: [150, 230, 224, 218, 135, 147, 260],
-            type: 'line'
+            name: '总阅读量',
+            type: 'line',
+            //stack: 'Total',
+            data: seriesView
+          },
+          {
+            name: '总点赞数',
+            type: 'line',
+            //stack: 'Total',
+            data: seriesVote
           }
         ]
-      })
+      };
+      myChart.setOption(option);
     };
+
+    /**
+     *  获取后端30天数据
+     */
+    const get30DayStatistic = () => {
+      axios.get('/ebookSnapshot/get30Statistic').then((response) => {
+        const data = response.data;
+        if (data.success) {
+          const statisticList = data.data;
+          setTimeout(()=>{
+            init30DayEcharts(statisticList);
+          })
+        }
+      });
+    }
 
 
     onMounted(() => {
       getStatistic();
-      testEcharts();
+      get30DayStatistic();
     });
 
     return {
