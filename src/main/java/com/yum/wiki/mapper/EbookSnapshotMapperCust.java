@@ -18,4 +18,11 @@ public interface EbookSnapshotMapperCust {
      * @return
      */
     List<StatisticRes> getStatistic();
+
+    /**
+     * 30天
+     *
+     * @return
+     */
+    List<StatisticRes> get30Statistic();
 }

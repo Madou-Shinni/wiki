@@ -32,4 +32,17 @@ public class EbookSnapShotController {
         result.setData(statisticResList);
         return result;
     }
+
+    /**
+     * 30天
+     *
+     * @return
+     */
+    @GetMapping("/get30Statistic")
+    public CommonResult get30Statistic() {
+        List<StatisticRes> statisticResList = ebookSnapShotService.get30Statistic();
+        CommonResult<List<StatisticRes>> result = new CommonResult();
+        result.setData(statisticResList);
+        return result;
+    }
 }

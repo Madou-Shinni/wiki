@@ -27,4 +27,13 @@ public class EbookSnapShotService {
     public List<StatisticRes> getStatistic() {
         return ebookSnapshotMapperCust.getStatistic();
     }
+
+    /**
+     * 30天
+     *
+     * @return
+     */
+    public List<StatisticRes> get30Statistic() {
+        return ebookSnapshotMapperCust.get30Statistic();
+    }
 }
