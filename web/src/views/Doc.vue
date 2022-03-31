@@ -67,7 +67,7 @@
   display: inline-block;
   *display: inline;
   *zoom: 1;
-  background-color: #f1f1f1;
+  background-color: #282c34;
   border-radius: 3px;
   padding: 3px 5px;
   margin: 0 3px;
@@ -100,6 +100,7 @@ import {useRoute} from "vue-router";
 import {message} from "ant-design-vue";
 import axios from "axios";
 import {Tool} from "@/util/tool";
+import 'highlight.js/styles/monokai-sublime.css';
 
 export default defineComponent({
   name: "Doc",

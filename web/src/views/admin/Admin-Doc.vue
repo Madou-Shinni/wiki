@@ -112,7 +112,8 @@ import {Tool} from "@/util/tool";
 import {useRoute} from "vue-router";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import E from 'wangeditor'
-
+import hljs from "highlight.js";
+import 'highlight.js/styles/monokai-sublime.css'
 
 export default defineComponent({
   name: 'AdminDoc',
@@ -362,6 +363,8 @@ export default defineComponent({
       setTimeout(()=>{
         editor = new E('#content');
         editor.config.zIndex = 0;
+        // 挂载highlight插件
+        editor.highlight = hljs
         editor.create();
       },100)
     });

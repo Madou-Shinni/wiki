@@ -218,7 +218,7 @@ public class DocService {
         //docMapperCust.increaseVoteCount(id);
         // 远程ip+doc.id作为key,24小时内不能重复
         String key = RequestContextUtil.getRemoteAddr();
-        if(redisUtil.validateRequest("DOC_VOTE" + id + "_" + key,5000))
+        if(redisUtil.validateRequest("DOC_VOTE" + id + "_" + key,3600 * 24))
             docMapperCust.increaseVoteCount(id);
         else
             throw new RepeatIncreaseVoteException("您已经点赞过了！");
