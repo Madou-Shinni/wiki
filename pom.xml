@@ -85,6 +85,8 @@
     </dependencies>
 
     <build>
+        <!--打包最后的包名-->
+        <finalName>/dist/${artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

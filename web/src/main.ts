@@ -31,10 +31,10 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
-        console.log('返回结果：',response)
+        //console.log('返回结果：',response)
         return response
     },error => {
-        console.log('返回错误：',error)
+        //console.log('返回错误：',error)
         return Promise.reject(error)
     })
 

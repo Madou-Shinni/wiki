@@ -1,6 +1,6 @@
 <template>
   <a-layout-footer style="text-align: center">
-    小天才知识库 | ©2022-present | Created by 小天才
+    <a href="https://beian.miit.gov.cn">浙ICP备2021028812号-2&nbsp;</a>小天才知识库 | ©2022-present | Created by 小天才
   </a-layout-footer>
 </template>
 

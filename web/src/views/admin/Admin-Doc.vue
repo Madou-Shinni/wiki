@@ -101,7 +101,66 @@
   </a-layout>
 </template>
 
+<style>
+/* table 样式 */
+.wangEditor table {
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+.wangEditor table td,
+.wangEditor table th {
+  border-bottom: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  padding: 3px 5px;
+}
+.wangEditor table th {
+  border-bottom: 2px solid #ccc;
+  text-align: center;
+}
 
+/* blockquote 样式 */
+.wangEditor blockquote {
+  display: block;
+  border-left: 8px solid #d0e5f2;
+  padding: 5px 10px;
+  margin: 10px 0;
+  line-height: 1.4;
+  font-size: 100%;
+  background-color: #f1f1f1;
+}
+
+/* code 样式 */
+.wangEditor code {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  background-color: #282c34;
+  border-radius: 3px;
+  padding: 3px 5px;
+  margin: 0 3px;
+}
+.wangEditor pre code {
+  display: block;
+  color: #cccccc;
+}
+
+/* ul ol 样式 */
+.wangEditor ul, ol {
+  margin: 10px 0 10px 20px;
+}
+
+.wangEditor blockquote p {
+  font-family: "YouYuan";
+  margin: 20px 10px !important;
+  font-size: 16px !important;
+  font-weight: 600;
+}
+
+.wangEditor img {
+  max-width: 100%;
+  height: auto;
+}
+</style>
 
 
 <script lang="ts">
@@ -113,7 +172,6 @@ import {useRoute} from "vue-router";
 import {ExclamationCircleOutlined} from "@ant-design/icons-vue";
 import E from 'wangeditor'
 import hljs from "highlight.js";
-import 'highlight.js/styles/monokai-sublime.css'
 
 export default defineComponent({
   name: 'AdminDoc',

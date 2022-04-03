@@ -74,6 +74,7 @@
 }
 .wangEditor pre code {
   display: block;
+  color: #cccccc;
 }
 
 /* ul ol 样式 */
@@ -105,7 +106,6 @@ import {useRoute} from "vue-router";
 import {message} from "ant-design-vue";
 import axios from "axios";
 import {Tool} from "@/util/tool";
-import 'highlight.js/styles/monokai-sublime.css';
 
 export default defineComponent({
   name: "Doc",

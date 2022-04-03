@@ -13,23 +13,3 @@ spring:
     host: 127.0.0.1
     port: 6379
     password: XW123456789a
-  # rabbit
-#  rabbitmq:
-#    host: 112.124.14.11
-#    port: 5672
-#    username: admin
-#    password: admin
-
-
-# 自定义配置
-test:
-  hello: Hello
-# 日志级别
-logging:
-  level:
-    root: info
-mybatis:
-  # mapper.xml路径
-  mapper-locations: classpath*:mapper/**/*.xml
-  # 别名映射包路径
-  type-aliases-package: com.yum.wiki.domain,;com.yum.wiki.result

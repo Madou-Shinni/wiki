@@ -12,6 +12,9 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/about',
     name: 'About',
+    meta: {
+      title: '首页'
+    },
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -61,8 +64,11 @@ const router = createRouter({
   routes
 })
 
+const defaultTitle = '小天才知识库';
+
 // 路由登录拦截
 router.beforeEach((to, from, next) => {
+  document.title = defaultTitle;
   // 要不要对meta.loginRequire属性做监控拦截
   if (to.matched.some(function (item) {
     //console.log(item, "是否需要登录校验：", item.meta.loginRequire);
