@@ -168,8 +168,6 @@ export default defineComponent({
       ebook.value = {};
       visible.value = true;
       isAdd.value = true;
-      ebook.value.category1Id = categoryIds.value[0];
-      ebook.value.category2Id = categoryIds.value[1];
     };
     /**
      * 删除
@@ -214,6 +212,8 @@ export default defineComponent({
 
     const handleOk = () => {
       confirmLoading.value = true;
+      ebook.value.category1Id = categoryIds.value[0];
+      ebook.value.category2Id = categoryIds.value[1];
 
       // 判断是否新增
       if (isAdd.value) {

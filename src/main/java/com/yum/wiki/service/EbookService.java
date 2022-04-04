@@ -79,9 +79,11 @@ public class EbookService {
     public void save(EbookSaveReq req) {
         Ebook ebook = CopyUtil.copy(req,Ebook.class);
         ebook.setId(snowFlakeUtil.nextId());
+        // 解决新增异常bug
         ebook.setDocCount(0);
         ebook.setViewCount(0);
         ebook.setVoteCount(0);
+
         ebookMapper.insert(ebook);
     }
 
