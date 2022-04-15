@@ -44,7 +44,7 @@ public class DocController {
      * @Validated 校验规则
      * 对DocQueryReq参数做校验
      *
-     * 查询分类列表
+     * 查询文档列表
      * @param req
      * @return
      */
@@ -58,7 +58,7 @@ public class DocController {
 
 
     /**
-     * 修改分类
+     * 修改文档
      * @param req
      * @return
      */
@@ -70,7 +70,7 @@ public class DocController {
     }
 
     /**
-     * 新增分类
+     * 新增文档
      * @param req
      * @return
      */
@@ -82,7 +82,7 @@ public class DocController {
     }
 
     /**
-     * 根据id删除分类
+     * 根据id删除文档
      * @param idsStr
      * @return
      */

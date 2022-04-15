@@ -170,7 +170,7 @@ public class DocService {
         Content content = CopyUtil.copy(req,Content.class);
         doc.setId(snowFlakeUtil.nextId());
         doc.setViewCount(0);
-        doc.setViewCount(0);
+        doc.setVoteCount(0);
         content.setId(doc.getId());
         docMapper.insert(doc);
         contentMapper.insert(content);

@@ -308,7 +308,7 @@ export default defineComponent({
 
       treeSelectData.value = Tool.copy(docs.value);
       // 为选择树添加一个无
-      //treeSelectData.value.unshift({id: 0,  name: '无'});
+      treeSelectData.value.unshift({id: 0,  name: '无'});
     };
     /**
      * 删除
